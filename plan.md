@@ -98,3 +98,9 @@ Core = contact form → FastAPI → MongoDB persistence → owner retrieval.
 - Site matches professional logistics marketing expectations (hero, why-us, services, fleet, network, CTA, footer).
 - Responsive across mobile/tablet/desktop; no broken navigation.
 - testing_agent_v3 passes end-to-end for core flows (toggle, navigation, contact submit).
+---
+## STATUS UPDATE (Phase 1 & 2 COMPLETE)
+- Backend: POST /api/contact + GET /api/contacts implemented with full validation. Working.
+- Frontend: Full bilingual (EN/HI) marketing site done — Home (all 10 sections), About, Services, Fleet, Network, Contact pages. Language toggle persists via localStorage (dahmi-lang).
+- Testing: testing_agent_v3 iteration_1 — 100% pass (backend 14/14, frontend all features).
+- Next (Phase 3, on user request): Admin leads page (/admin/contacts), CSV export, rate limiting, API key protection.
