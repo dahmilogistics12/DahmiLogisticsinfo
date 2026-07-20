@@ -11,6 +11,7 @@ export const Footer = () => {
     { key: "services", path: "/services" },
     { key: "fleet", path: "/fleet" },
     { key: "network", path: "/network" },
+    { key: "careers", path: "/careers" },
     { key: "contact", path: "/contact" },
   ];
 

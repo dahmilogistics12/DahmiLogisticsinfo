@@ -13,6 +13,7 @@ export const translations = {
       services: "Services",
       fleet: "Fleet",
       network: "Network",
+      careers: "Careers",
       contact: "Contact",
     },
     common: {
@@ -241,6 +242,90 @@ export const translations = {
         hours: "24x7 — Always available for your cargo",
       },
     },
+    careers: {
+      kicker: "Careers",
+      title: "Build your career on the road with us",
+      subtitle:
+        "Join a growing Pan-India logistics team that values safety, honesty and hard work. Grow with us, succeed with us.",
+      perksTitle: "Why work with Dahmi Logistics",
+      perks: [
+        {
+          title: "Growth & Learning",
+          desc: "Grow your skills with a fast-expanding Pan-India logistics network.",
+        },
+        {
+          title: "Supportive Team",
+          desc: "Work with people who respect, guide and support each other.",
+        },
+        {
+          title: "Fair & Timely Pay",
+          desc: "Transparent, on-time salaries and settlements — always.",
+        },
+        {
+          title: "Pan-India Exposure",
+          desc: "Gain experience across operations in 8+ cities of India.",
+        },
+      ],
+      rolesTitle: "Teams you can join",
+      roles: [
+        {
+          code: "drivers",
+          title: "Drivers & Fleet Staff",
+          desc: "Professional drivers and fleet support for FTL, container and trailer operations.",
+        },
+        {
+          code: "operations",
+          title: "Operations & Dispatch",
+          desc: "Plan routes, manage loads and keep cargo moving on time, every time.",
+        },
+        {
+          code: "sales",
+          title: "Sales & Business Development",
+          desc: "Build lasting shipper and vendor relationships across India.",
+        },
+        {
+          code: "accounts",
+          title: "Accounts & Admin",
+          desc: "Keep payments fast, records clean and processes transparent.",
+        },
+      ],
+      form: {
+        title: "Apply Now",
+        subtitle: "Share your details and our team will reach out to you.",
+        name: "Full Name",
+        namePlaceholder: "Your name",
+        phone: "Phone Number",
+        phonePlaceholder: "e.g. 9903830332",
+        email: "Email (optional)",
+        emailPlaceholder: "you@example.com",
+        position: "Position",
+        positionPlaceholder: "Select a position",
+        positionOptions: [
+          { value: "drivers", label: "Drivers & Fleet Staff" },
+          { value: "operations", label: "Operations & Dispatch" },
+          { value: "sales", label: "Sales & Business Development" },
+          { value: "accounts", label: "Accounts & Admin" },
+          { value: "other", label: "Other" },
+        ],
+        experience: "Experience (optional)",
+        experiencePlaceholder: "e.g. 3 years",
+        message: "Why do you want to join?",
+        messagePlaceholder: "Tell us briefly about yourself...",
+        submit: "Submit Application",
+        submitting: "Submitting...",
+        successTitle: "Application submitted!",
+        successDesc: "Our team will review it and contact you soon.",
+        errorTitle: "Could not submit application",
+        errorDesc: "Please try again or call us directly.",
+        errors: {
+          name: "Please enter your name (min 2 characters)",
+          phone: "Please enter a valid phone number (7-15 digits)",
+          email: "Please enter a valid email address",
+          position: "Please select a position",
+          message: "Please write a short message (min 5 characters)",
+        },
+      },
+    },
     footer: {
       blurb:
         "Reliable logistics solutions across India. FTL, Part Load & Express services — on time, every time.",
@@ -265,6 +350,7 @@ export const translations = {
       services: "सेवाएं",
       fleet: "फ्लीट",
       network: "नेटवर्क",
+      careers: "करियर",
       contact: "संपर्क करें",
     },
     common: {
@@ -491,6 +577,90 @@ export const translations = {
         branchesLabel: "शाखाएं",
         hoursLabel: "सहायता",
         hours: "24x7 — आपके कार्गो के लिए हमेशा उपलब्ध",
+      },
+    },
+    careers: {
+      kicker: "करियर",
+      title: "हमारे साथ अपना करियर बनाएं",
+      subtitle:
+        "एक बढ़ती हुई पैन-इंडिया लॉजिस्टिक्स टीम से जुड़ें जो सुरक्षा, ईमानदारी और मेहनत को महत्व देती है। हमारे साथ बढ़ें, हमारे साथ सफल हों।",
+      perksTitle: "दाहमी लॉजिस्टिक्स के साथ काम क्यों करें",
+      perks: [
+        {
+          title: "विकास और सीखना",
+          desc: "तेज़ी से बढ़ते पैन-इंडिया लॉजिस्टिक्स नेटवर्क के साथ अपने कौशल बढ़ाएं।",
+        },
+        {
+          title: "सहयोगी टीम",
+          desc: "ऐसे लोगों के साथ काम करें जो एक-दूसरे का सम्मान और सहयोग करते हैं।",
+        },
+        {
+          title: "उचित और समय पर वेतन",
+          desc: "पारदर्शी, समय पर वेतन और सेटलमेंट — हमेशा।",
+        },
+        {
+          title: "पैन-इंडिया अनुभव",
+          desc: "भारत के 8+ शहरों में संचालन का अनुभव प्राप्त करें।",
+        },
+      ],
+      rolesTitle: "आप किन टीमों से जुड़ सकते हैं",
+      roles: [
+        {
+          code: "drivers",
+          title: "ड्राइवर और फ्लीट स्टाफ",
+          desc: "FTL, कंटेनर और ट्रेलर संचालन के लिए पेशेवर ड्राइवर और फ्लीट सहायता।",
+        },
+        {
+          code: "operations",
+          title: "ऑपरेशन्स और डिस्पैच",
+          desc: "रूट की योजना बनाएं, लोड प्रबंधित करें और कार्गो को समय पर चलाते रहें।",
+        },
+        {
+          code: "sales",
+          title: "सेल्स और बिज़नेस डेवलपमेंट",
+          desc: "पूरे भारत में शिपर और वेंडर संबंध बनाएं।",
+        },
+        {
+          code: "accounts",
+          title: "अकाउंट्स और एडमिन",
+          desc: "भुगतान तेज़, रिकॉर्ड साफ और प्रक्रियाएं पारदर्शी रखें।",
+        },
+      ],
+      form: {
+        title: "अभी आवेदन करें",
+        subtitle: "अपना विवरण साझा करें और हमारी टीम आपसे संपर्क करेगी।",
+        name: "पूरा नाम",
+        namePlaceholder: "आपका नाम",
+        phone: "फोन नंबर",
+        phonePlaceholder: "जैसे 9903830332",
+        email: "ईमेल (वैकल्पिक)",
+        emailPlaceholder: "you@example.com",
+        position: "पद",
+        positionPlaceholder: "पद चुनें",
+        positionOptions: [
+          { value: "drivers", label: "ड्राइवर और फ्लीट स्टाफ" },
+          { value: "operations", label: "ऑपरेशन्स और डिस्पैच" },
+          { value: "sales", label: "सेल्स और बिज़नेस डेवलपमेंट" },
+          { value: "accounts", label: "अकाउंट्स और एडमिन" },
+          { value: "other", label: "अन्य" },
+        ],
+        experience: "अनुभव (वैकल्पिक)",
+        experiencePlaceholder: "जैसे 3 साल",
+        message: "आप क्यों जुड़ना चाहते हैं?",
+        messagePlaceholder: "अपने बारे में संक्षेप में बताएं...",
+        submit: "आवेदन जमा करें",
+        submitting: "जमा किया जा रहा है...",
+        successTitle: "आवेदन जमा हो गया!",
+        successDesc: "हमारी टीम इसकी समीक्षा कर जल्द ही आपसे संपर्क करेगी।",
+        errorTitle: "आवेदन जमा नहीं हो सका",
+        errorDesc: "कृपया पुनः प्रयास करें या हमें सीधे कॉल करें।",
+        errors: {
+          name: "कृपया अपना नाम दर्ज करें (कम से कम 2 अक्षर)",
+          phone: "कृपया मान्य फोन नंबर दर्ज करें (7-15 अंक)",
+          email: "कृपया मान्य ईमेल पता दर्ज करें",
+          position: "कृपया एक पद चुनें",
+          message: "कृपया संक्षिप्त संदेश लिखें (कम से कम 5 अक्षर)",
+        },
       },
     },
     footer: {

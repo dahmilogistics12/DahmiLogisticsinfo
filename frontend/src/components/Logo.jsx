@@ -10,7 +10,7 @@ export const Logo = ({ light = false }) => {
       <span className="leading-none">
         <span
           className={`block text-[17px] font-bold tracking-tight ${
-            light ? "text-white" : "text-[hsl(var(--brand-navy))]"
+            light ? "text-white" : "text-[hsl(var(--brand-navy))] dark:text-white"
           }`}
         >
           DAHMI

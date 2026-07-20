@@ -26,6 +26,10 @@ const pageMeta = {
       title: "Branch Network Across India | Dahmi Logistics",
       desc: "Dahmi Logistics branches in Kolkata, Durgapur & Haldia with satellite branches in Gauhati, Ranchi, Bhubaneswar, Mumbai and Surat — keeping your cargo moving Pan-India.",
     },
+    "/careers": {
+      title: "Careers — Join Our Team | Dahmi Logistics",
+      desc: "Build your career with Dahmi Logistics. Openings for drivers, operations, sales and accounts across our growing Pan-India logistics network. Apply now.",
+    },
     "/contact": {
       title: "Contact Us | Dahmi Logistics",
       desc: "Get in touch with Dahmi Logistics for FTL, Part Load, Express shipments or vendor partnerships. Call +91 9903830332 or send us a message — 24x7 support.",
@@ -51,6 +55,10 @@ const pageMeta = {
     "/network": {
       title: "पूरे भारत में शाखा नेटवर्क | दाहमी लॉजिस्टिक्स",
       desc: "कोलकाता, दुर्गापुर और हल्दिया में शाखाएं तथा गुवाहाटी, रांची, भुवनेश्वर, मुंबई और सूरत में सैटेलाइट शाखाएं।",
+    },
+    "/careers": {
+      title: "करियर — हमारी टीम से जुड़ें | दाहमी लॉजिस्टिक्स",
+      desc: "दाहमी लॉजिस्टिक्स के साथ अपना करियर बनाएं। ड्राइवर, ऑपरेशन्स, सेल्स और अकाउंट्स के लिए अवसर। अभी आवेदन करें।",
     },
     "/contact": {
       title: "संपर्क करें | दाहमी लॉजिस्टिक्स",

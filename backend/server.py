@@ -124,6 +124,101 @@ async def list_contact_submissions(
     return docs
 
 
+POSITION_OPTIONS = ["drivers", "operations", "sales", "accounts", "other"]
+
+
+class CareerApplicationCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    phone: str = Field(..., min_length=7, max_length=20)
+    email: Optional[str] = Field(default=None, max_length=120)
+    position: str = Field(..., max_length=30)
+    experience: Optional[str] = Field(default=None, max_length=100)
+    message: str = Field(..., min_length=5, max_length=2000)
+    language: Optional[str] = Field(default="en", max_length=5)
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 2:
+            raise ValueError("Name must be at least 2 characters")
+        return v
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str) -> str:
+        cleaned = re.sub(r"[\s\-()]", "", v.strip())
+        if not re.fullmatch(r"\+?\d{7,15}", cleaned):
+            raise ValueError("Enter a valid phone number (7-15 digits)")
+        return cleaned
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, v: Optional[str]) -> Optional[str]:
+        if v is None or v.strip() == "":
+            return None
+        v = v.strip()
+        if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", v):
+            raise ValueError("Enter a valid email address")
+        return v
+
+    @field_validator("position")
+    @classmethod
+    def validate_position(cls, v: str) -> str:
+        v = v.strip()
+        if v not in POSITION_OPTIONS:
+            raise ValueError(f"position must be one of {POSITION_OPTIONS}")
+        return v
+
+    @field_validator("message")
+    @classmethod
+    def validate_message(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 5:
+            raise ValueError("Message must be at least 5 characters")
+        return v
+
+
+class CareerApplication(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    phone: str
+    email: Optional[str] = None
+    position: str
+    experience: Optional[str] = None
+    message: str
+    language: Optional[str] = "en"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+@api_router.post("/careers", response_model=CareerApplication)
+async def create_career_application(payload: CareerApplicationCreate):
+    application = CareerApplication(**payload.model_dump())
+    doc = application.model_dump()
+    doc["created_at"] = doc["created_at"].isoformat()
+    await db.career_applications.insert_one(doc)
+    return application
+
+
+@api_router.get("/careers", response_model=List[CareerApplication])
+async def list_career_applications(
+    limit: int = Query(default=100, ge=1, le=500),
+    skip: int = Query(default=0, ge=0),
+):
+    docs = (
+        await db.career_applications.find({}, {"_id": 0})
+        .sort("created_at", -1)
+        .skip(skip)
+        .to_list(limit)
+    )
+    for d in docs:
+        if isinstance(d.get("created_at"), str):
+            d["created_at"] = datetime.fromisoformat(d["created_at"])
+    return docs
+
+
 app.include_router(api_router)
 
 app.add_middleware(

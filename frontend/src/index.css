@@ -37,6 +37,31 @@
     --brand-sand: 38 45% 92%;
   }
 
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 96%;
+    --card: 222 44% 10%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 44% 10%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 210 40% 96%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 222 40% 12%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 222 35% 15%;
+    --muted-foreground: 215 20% 68%;
+    --accent: 28 92% 55%;
+    --accent-foreground: 222 47% 11%;
+    --border: 222 28% 19%;
+    --input: 222 28% 19%;
+    --ring: 28 92% 55%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 210 40% 98%;
+    --brand-navy: 222 55% 15%;
+    --brand-navy-2: 222 50% 20%;
+    --brand-sand: 222 38% 15%;
+  }
+
   * {
     @apply border-border;
   }
@@ -80,6 +105,67 @@
   background-image: linear-gradient(135deg, hsla(38, 45%, 92%, 1) 0%, hsla(210, 33%, 98%, 1) 55%, hsla(28, 92%, 55%, 0.1) 100%);
 }
 
+.dark .cta-sand {
+  background-image: linear-gradient(135deg, hsl(222 44% 12%) 0%, hsl(222 47% 9%) 55%, hsla(28, 92%, 55%, 0.16) 100%);
+}
+
+.dark .hero-mist {
+  background-image: radial-gradient(900px circle at 20% 10%, hsla(199, 84%, 45%, 0.1), transparent 55%),
+    radial-gradient(700px circle at 80% 0%, hsla(28, 92%, 55%, 0.1), transparent 52%);
+}
+
+/* Floating animation for hero overlay cards */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.float-anim {
+  animation: float-y 5s ease-in-out infinite;
+}
+.float-anim-delayed {
+  animation: float-y 5s ease-in-out 1.4s infinite;
+}
+
+/* Infinite marquee for value props */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 3.5rem;
+  animation: marquee-scroll 30s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Soft glow pulse for accents */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsla(28, 92%, 55%, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 22px 4px hsla(28, 92%, 55%, 0.18);
+  }
+}
+.glow-anim {
+  animation: glow-pulse 3.5s ease-in-out infinite;
+}
+
 ::selection {
   background: hsla(28, 92%, 55%, 0.25);
 }
@@ -95,7 +181,11 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .route-dash {
+  .route-dash,
+  .float-anim,
+  .float-anim-delayed,
+  .marquee-track,
+  .glow-anim {
     animation: none;
   }
   html {

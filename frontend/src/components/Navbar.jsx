@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Phone, Menu, Languages } from "lucide-react";
+import { Phone, Menu, Languages, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Logo } from "@/components/Logo";
 import { useLang, CONTACT_PHONE, CONTACT_PHONE_TEL } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 const navItems = [
   { key: "home", path: "/" },
@@ -13,11 +14,13 @@ const navItems = [
   { key: "services", path: "/services" },
   { key: "fleet", path: "/fleet" },
   { key: "network", path: "/network" },
+  { key: "careers", path: "/careers" },
   { key: "contact", path: "/contact" },
 ];
 
 export const Navbar = () => {
   const { lang, toggleLang, t } = useLang();
+  const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -30,7 +33,7 @@ export const Navbar = () => {
         <Logo />
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-5 lg:flex" aria-label="Main navigation">
           {navItems.map((item) => (
             <NavLink
               key={item.key}
@@ -48,6 +51,17 @@ export const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            data-testid="theme-toggle"
+            className="h-9 w-9"
+            aria-label="Toggle dark mode"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+
           <Button
             variant="outline"
             size="sm"

@@ -269,6 +269,218 @@ class DahmiLogisticsAPITester:
         
         return all_passed
 
+    # ========== CAREERS API TESTS ==========
+    
+    def test_create_career_valid(self):
+        """Test POST /api/careers with valid payload"""
+        try:
+            payload = {
+                "name": "John Doe",
+                "phone": "9903830332",
+                "email": "john@example.com",
+                "position": "drivers",
+                "experience": "5 years",
+                "message": "I want to join as a driver",
+                "language": "en"
+            }
+            response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+            passed = response.status_code == 200
+            if passed:
+                data = response.json()
+                has_id = "id" in data
+                has_name = data.get("name") == payload["name"]
+                has_position = data.get("position") == payload["position"]
+                passed = has_id and has_name and has_position
+                details = f"Status: {response.status_code}, ID: {data.get('id', 'N/A')}"
+            else:
+                details = f"Status: {response.status_code}, Response: {response.text[:200]}"
+            self.log_result("POST /api/careers - Valid Payload", passed, details)
+            return passed, response.json() if response.status_code == 200 else None
+        except Exception as e:
+            self.log_result("POST /api/careers - Valid Payload", False, f"Error: {str(e)}")
+            return False, None
+
+    def test_create_career_short_name(self):
+        """Test POST /api/careers with short name (<2 chars)"""
+        try:
+            payload = {
+                "name": "J",
+                "phone": "9903830332",
+                "email": "test@example.com",
+                "position": "drivers",
+                "message": "I want to join",
+                "language": "en"
+            }
+            response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+            passed = response.status_code == 422
+            details = f"Status: {response.status_code}, Expected: 422"
+            self.log_result("POST /api/careers - Short Name Validation", passed, details)
+            return passed
+        except Exception as e:
+            self.log_result("POST /api/careers - Short Name Validation", False, f"Error: {str(e)}")
+            return False
+
+    def test_create_career_invalid_phone(self):
+        """Test POST /api/careers with invalid phone"""
+        try:
+            payload = {
+                "name": "John Doe",
+                "phone": "123",
+                "email": "test@example.com",
+                "position": "drivers",
+                "message": "I want to join",
+                "language": "en"
+            }
+            response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+            passed = response.status_code == 422
+            details = f"Status: {response.status_code}, Expected: 422"
+            self.log_result("POST /api/careers - Invalid Phone", passed, details)
+            return passed
+        except Exception as e:
+            self.log_result("POST /api/careers - Invalid Phone", False, f"Error: {str(e)}")
+            return False
+
+    def test_create_career_invalid_email(self):
+        """Test POST /api/careers with invalid email"""
+        try:
+            payload = {
+                "name": "John Doe",
+                "phone": "9903830332",
+                "email": "invalid-email",
+                "position": "drivers",
+                "message": "I want to join",
+                "language": "en"
+            }
+            response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+            passed = response.status_code == 422
+            details = f"Status: {response.status_code}, Expected: 422"
+            self.log_result("POST /api/careers - Invalid Email", passed, details)
+            return passed
+        except Exception as e:
+            self.log_result("POST /api/careers - Invalid Email", False, f"Error: {str(e)}")
+            return False
+
+    def test_create_career_invalid_position(self):
+        """Test POST /api/careers with invalid position value"""
+        try:
+            payload = {
+                "name": "John Doe",
+                "phone": "9903830332",
+                "email": "test@example.com",
+                "position": "invalid_position",
+                "message": "I want to join",
+                "language": "en"
+            }
+            response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+            passed = response.status_code == 422
+            details = f"Status: {response.status_code}, Expected: 422"
+            self.log_result("POST /api/careers - Invalid Position", passed, details)
+            return passed
+        except Exception as e:
+            self.log_result("POST /api/careers - Invalid Position", False, f"Error: {str(e)}")
+            return False
+
+    def test_create_career_short_message(self):
+        """Test POST /api/careers with short message (<5 chars)"""
+        try:
+            payload = {
+                "name": "John Doe",
+                "phone": "9903830332",
+                "email": "test@example.com",
+                "position": "drivers",
+                "message": "Hi",
+                "language": "en"
+            }
+            response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+            passed = response.status_code == 422
+            details = f"Status: {response.status_code}, Expected: 422"
+            self.log_result("POST /api/careers - Short Message", passed, details)
+            return passed
+        except Exception as e:
+            self.log_result("POST /api/careers - Short Message", False, f"Error: {str(e)}")
+            return False
+
+    def test_all_position_options(self):
+        """Test all valid position options"""
+        position_options = ["drivers", "operations", "sales", "accounts", "other"]
+        all_passed = True
+        
+        for position in position_options:
+            try:
+                payload = {
+                    "name": f"Test {position.title()}",
+                    "phone": "9903830332",
+                    "email": "test@example.com",
+                    "position": position,
+                    "experience": "2 years",
+                    "message": f"Applying for {position} position",
+                    "language": "en"
+                }
+                response = requests.post(f"{self.api_url}/careers", json=payload, timeout=10)
+                passed = response.status_code == 200
+                if not passed:
+                    all_passed = False
+                details = f"Position: {position}, Status: {response.status_code}"
+                self.log_result(f"POST /api/careers - Position '{position}'", passed, details)
+            except Exception as e:
+                all_passed = False
+                self.log_result(f"POST /api/careers - Position '{position}'", False, f"Error: {str(e)}")
+        
+        return all_passed
+
+    def test_get_careers(self):
+        """Test GET /api/careers - should return list sorted newest first"""
+        try:
+            # First create two career applications with slight delay
+            career1_payload = {
+                "name": "First Applicant",
+                "phone": "9903830331",
+                "email": "first@example.com",
+                "position": "drivers",
+                "experience": "3 years",
+                "message": "First application message",
+                "language": "en"
+            }
+            career2_payload = {
+                "name": "Second Applicant",
+                "phone": "9903830332",
+                "email": "second@example.com",
+                "position": "operations",
+                "experience": "5 years",
+                "message": "Second application message",
+                "language": "en"
+            }
+            
+            requests.post(f"{self.api_url}/careers", json=career1_payload, timeout=10)
+            time.sleep(0.5)
+            requests.post(f"{self.api_url}/careers", json=career2_payload, timeout=10)
+            
+            # Now get the career applications
+            response = requests.get(f"{self.api_url}/careers", timeout=10)
+            passed = response.status_code == 200
+            
+            if passed:
+                data = response.json()
+                is_list = isinstance(data, list)
+                has_careers = len(data) >= 2
+                
+                if has_careers and len(data) >= 2:
+                    first_item = data[0]
+                    is_sorted = first_item.get("name") == "Second Applicant"
+                    passed = is_list and has_careers and is_sorted
+                    details = f"Status: {response.status_code}, Count: {len(data)}, First: {first_item.get('name')}, Sorted: {is_sorted}"
+                else:
+                    passed = is_list and has_careers
+                    details = f"Status: {response.status_code}, Count: {len(data)}"
+            else:
+                details = f"Status: {response.status_code}, Response: {response.text[:200]}"
+            
+            self.log_result("GET /api/careers - List & Sort", passed, details)
+            return passed
+        except Exception as e:
+            self.log_result("GET /api/careers - List & Sort", False, f"Error: {str(e)}")
+            return False
+
     def run_all_tests(self):
         """Run all backend tests"""
         print("\n" + "="*70)
@@ -289,7 +501,7 @@ class DahmiLogisticsAPITester:
         self.test_all_service_options()
         
         # Test validation
-        print("\n--- Testing Validation ---\n")
+        print("\n--- Testing Contact Validation ---\n")
         self.test_create_contact_short_name()
         self.test_create_contact_invalid_phone_letters()
         self.test_create_contact_invalid_phone_short()
@@ -300,6 +512,31 @@ class DahmiLogisticsAPITester:
         # Test GET endpoint
         print("\n--- Testing GET /api/contacts Endpoint ---\n")
         self.test_get_contacts()
+        
+        # ========== CAREERS API TESTS ==========
+        print("\n" + "="*70)
+        print("CAREERS API TESTS (NEW FEATURE)")
+        print("="*70 + "\n")
+        
+        print("\n--- Testing POST /api/careers Endpoint ---\n")
+        
+        # Test valid career application
+        self.test_create_career_valid()
+        
+        # Test all position options
+        self.test_all_position_options()
+        
+        # Test validation
+        print("\n--- Testing Career Validation ---\n")
+        self.test_create_career_short_name()
+        self.test_create_career_invalid_phone()
+        self.test_create_career_invalid_email()
+        self.test_create_career_invalid_position()
+        self.test_create_career_short_message()
+        
+        # Test GET endpoint
+        print("\n--- Testing GET /api/careers Endpoint ---\n")
+        self.test_get_careers()
         
         # Print summary
         print("\n" + "="*70)
