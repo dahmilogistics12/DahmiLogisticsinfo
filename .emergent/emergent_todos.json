@@ -1,26 +1,26 @@
 [
   {
     "content": "Get design guidelines from design_agent",
-    "status": "in_progress"
+    "status": "completed"
   },
   {
-    "content": "Get logistics imagery (vision_expert / curated URLs)",
-    "status": "pending"
+    "content": "Get logistics imagery (from design guidelines)",
+    "status": "completed"
   },
   {
     "content": "Phase 1+2: Backend - contact API (POST /api/contact, GET /api/contacts)",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 2: Frontend - full bilingual marketing site (all sections + contact form)",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 2: All user stories covered in development",
-    "status": "pending"
+    "status": "completed"
   },
   {
     "content": "Phase 2: End to End Testing using Testing Agent",
-    "status": "pending"
+    "status": "in_progress"
   }
 ]

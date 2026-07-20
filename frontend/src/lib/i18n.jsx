@@ -1,0 +1,552 @@
+import { createContext, useContext, useEffect, useState } from "react";
+
+export const CONTACT_PHONE = "+91 9903830332";
+export const CONTACT_PHONE_TEL = "+919903830332";
+export const CONTACT_EMAIL = "dahmilogistics@gmail.com";
+export const CONTACT_WEBSITE = "www.dahmilogistics.com";
+
+export const translations = {
+  en: {
+    nav: {
+      home: "Home",
+      about: "About",
+      services: "Services",
+      fleet: "Fleet",
+      network: "Network",
+      contact: "Contact",
+    },
+    common: {
+      callNow: "Call Now",
+      contactUs: "Contact Us",
+      learnMore: "Learn More",
+      exploreFleet: "Explore Our Fleet",
+      viewNetwork: "View Our Network",
+      getQuoteHint: "Talk to our team for the best freight rates",
+    },
+    hero: {
+      badge: "On Time Every Time",
+      title1: "Delivering Trust,",
+      title2: "Driving Growth",
+      subtitle:
+        "Reliable logistics solutions across India — Full Truck Load, Part Load & Express services backed by a Pan-India network and a wide range of vehicles.",
+      imageAlt: "Dahmi Logistics truck on Indian highway",
+      card1Title: "Pan India Network",
+      card1Sub: "8+ cities, growing every year",
+      card2Title: "Safe & Secure",
+      card2Sub: "Your cargo, our responsibility",
+    },
+    stats: [
+      { value: "8+", label: "Cities in Network" },
+      { value: "5", label: "Fleet Categories" },
+      { value: "24x7", label: "Dedicated Support" },
+      { value: "Pan India", label: "Coverage" },
+    ],
+    about: {
+      kicker: "About Us",
+      title: "Dahmi Logistics — On Time Every Time",
+      body1:
+        "Dahmi Logistics is a trusted road transport and logistics partner delivering cargo reliably across India. From Full Truck Load and Part Load to Express services, we move goods for businesses of every size with safety, transparency and speed.",
+      body2:
+        "With branches in Kolkata, Durgapur and Haldia, and satellite branches across Gauhati, Ranchi, Bhubaneswar, Mumbai and Surat, our network keeps your supply chain moving — on time, every time.",
+      points: [
+        "FTL, Part Load & Express services",
+        "Wide range of vehicles for every cargo type",
+        "Single point of contact for all logistics needs",
+        "Transparent pricing and clear communication",
+      ],
+      imageAlt: "Cargo operations at Dahmi Logistics",
+    },
+    shippers: {
+      kicker: "For Shippers",
+      title: "Logistics that keeps your business moving",
+      subtitle:
+        "Everything a shipper needs — reliability, coverage, visibility and value, with a dedicated team behind every consignment.",
+      items: [
+        {
+          title: "Timely & Reliable Deliveries",
+          desc: "On time, every time. We plan every route and load to hit your delivery windows.",
+        },
+        {
+          title: "Pan India Coverage",
+          desc: "FTL, Part Load & Express services connecting major industrial and commercial hubs.",
+        },
+        {
+          title: "Real Time Tracking",
+          desc: "Complete visibility of your cargo throughout its journey.",
+        },
+        {
+          title: "Best Price Assurance",
+          desc: "Competitive rates and maximum value on every shipment.",
+        },
+        {
+          title: "Dedicated Support",
+          desc: "A single point of contact for all your logistics needs.",
+        },
+      ],
+    },
+    commitment: {
+      kicker: "Our Commitment",
+      title: "Your Cargo, Our Responsibility",
+      subtitle:
+        "Four pillars guide every kilometre we cover and every consignment we carry.",
+      pillars: [
+        {
+          title: "Safety",
+          desc: "Trained drivers, secure loading practices and careful handling at every step.",
+        },
+        {
+          title: "Reliability",
+          desc: "Consistent, dependable service your business can plan around.",
+        },
+        {
+          title: "Transparency",
+          desc: "Fair process, honest pricing and clear communication throughout.",
+        },
+        {
+          title: "Timely Delivery",
+          desc: "Deadlines matter. We deliver on time, every time.",
+        },
+      ],
+    },
+    partners: {
+      kicker: "For Vendors & Transport Partners",
+      title: "Grow with us, succeed with us",
+      subtitle:
+        "Join the Dahmi Logistics partner network and get consistent business with fast, fair and transparent dealings.",
+      items: [
+        {
+          title: "Regular Business Opportunities",
+          desc: "Consistent loads across our All India network keep your vehicles earning.",
+        },
+        {
+          title: "Fast Payments",
+          desc: "Timely and hassle-free settlements — no chasing, no delays.",
+        },
+        {
+          title: "Transparent Dealings",
+          desc: "Fair process and clear communication in every transaction.",
+        },
+        {
+          title: "Digital & Easy Process",
+          desc: "Quick assignments with less paperwork.",
+        },
+        {
+          title: "Long Term Partnerships",
+          desc: "We build relationships that grow with you.",
+        },
+      ],
+      cta: "Partner With Us",
+    },
+    fleet: {
+      kicker: "Our Fleet",
+      title: "A wide range of vehicles for every load",
+      subtitle:
+        "From light commercial vehicles to trailers — the right vehicle for your cargo, every time.",
+      items: [
+        {
+          code: "FTL",
+          name: "Full Truck Load",
+          desc: "Dedicated trucks for bulk movement of your cargo anywhere in India.",
+        },
+        {
+          code: "LCV",
+          name: "Light Commercial Vehicle",
+          desc: "Agile vehicles for smaller consignments and city distribution.",
+        },
+        {
+          code: "OPEN",
+          name: "Open Body Trucks",
+          desc: "Flexible open body trucks for oversized and general cargo.",
+        },
+        {
+          code: "CONTAINER",
+          name: "Container Trucks",
+          desc: "Sealed container vehicles for high-value and weather-sensitive goods.",
+        },
+        {
+          code: "TRAILER",
+          name: "Trailer Services",
+          desc: "Heavy-duty trailers for machinery, project and heavy haul cargo.",
+        },
+      ],
+    },
+    valueProps: [
+      "Pan India Network",
+      "Wide Range of Vehicles",
+      "On Time Every Time",
+      "Safe & Secure Deliveries",
+      "Strong Partnership, Lasting Growth",
+    ],
+    network: {
+      kicker: "Our Network",
+      title: "Branches across India",
+      subtitle:
+        "Strategically located branches and satellite offices keep your cargo moving across the country.",
+      branchesLabel: "Branches",
+      satelliteLabel: "Satellite Branches",
+      branches: ["Kolkata", "Durgapur", "Haldia"],
+      satellite: ["Gauhati", "Ranchi", "Bhubaneswar", "Mumbai", "Surat"],
+      legendMain: "Main Branch",
+      legendSatellite: "Satellite",
+    },
+    ctaBanner: {
+      title: "Let's Move Together",
+      subtitle: "Connect | Collaborate | Grow",
+      body: "Ready to ship or partner with us? Our team is one call away.",
+    },
+    contact: {
+      kicker: "Contact Us",
+      title: "Get in touch with our team",
+      subtitle:
+        "Tell us about your shipment or partnership enquiry — we respond quickly.",
+      form: {
+        name: "Full Name",
+        namePlaceholder: "Your name",
+        phone: "Phone Number",
+        phonePlaceholder: "e.g. 9903830332",
+        email: "Email (optional)",
+        emailPlaceholder: "you@company.com",
+        service: "Service Interest",
+        servicePlaceholder: "Select a service",
+        serviceOptions: [
+          { value: "FTL", label: "Full Truck Load (FTL)" },
+          { value: "Part Load", label: "Part Load" },
+          { value: "Express", label: "Express" },
+          { value: "Vendor Partnership", label: "Vendor / Transport Partnership" },
+          { value: "Other", label: "Other" },
+        ],
+        message: "Message",
+        messagePlaceholder: "Tell us about your requirement...",
+        submit: "Send Message",
+        submitting: "Sending...",
+        successTitle: "Message sent successfully!",
+        successDesc: "Our team will get back to you shortly.",
+        errorTitle: "Could not send message",
+        errorDesc: "Please try again or call us directly.",
+        errors: {
+          name: "Please enter your name (min 2 characters)",
+          phone: "Please enter a valid phone number (7-15 digits)",
+          email: "Please enter a valid email address",
+          service: "Please select a service",
+          message: "Please enter a message (min 5 characters)",
+        },
+      },
+      details: {
+        title: "Reach us directly",
+        phoneLabel: "Phone",
+        emailLabel: "Email",
+        websiteLabel: "Website",
+        branchesLabel: "Branches",
+        hoursLabel: "Support",
+        hours: "24x7 — Always available for your cargo",
+      },
+    },
+    footer: {
+      blurb:
+        "Reliable logistics solutions across India. FTL, Part Load & Express services — on time, every time.",
+      quickLinks: "Quick Links",
+      services: "Services",
+      servicesList: [
+        "Full Truck Load (FTL)",
+        "Part Load",
+        "Express Services",
+        "Container Trucks",
+        "Trailer Services",
+      ],
+      contact: "Contact",
+      tagline: "Let's Move Together — Connect | Collaborate | Grow",
+      rights: "All rights reserved.",
+    },
+  },
+  hi: {
+    nav: {
+      home: "होम",
+      about: "हमारे बारे में",
+      services: "सेवाएं",
+      fleet: "फ्लीट",
+      network: "नेटवर्क",
+      contact: "संपर्क करें",
+    },
+    common: {
+      callNow: "अभी कॉल करें",
+      contactUs: "संपर्क करें",
+      learnMore: "और जानें",
+      exploreFleet: "हमारा फ्लीट देखें",
+      viewNetwork: "हमारा नेटवर्क देखें",
+      getQuoteHint: "सर्वोत्तम माल भाड़ा दरों के लिए हमारी टीम से बात करें",
+    },
+    hero: {
+      badge: "हर बार, समय पर",
+      title1: "विश्वास की डिलीवरी,",
+      title2: "विकास की रफ़्तार",
+      subtitle:
+        "पूरे भारत में विश्वसनीय लॉजिस्टिक्स समाधान — फुल ट्रक लोड, पार्ट लोड और एक्सप्रेस सेवाएं, पैन-इंडिया नेटवर्क और विभिन्न प्रकार के वाहनों के साथ।",
+      imageAlt: "भारतीय राजमार्ग पर दाहमी लॉजिस्टिक्स ट्रक",
+      card1Title: "पैन इंडिया नेटवर्क",
+      card1Sub: "8+ शहर, हर साल बढ़ते हुए",
+      card2Title: "सुरक्षित और भरोसेमंद",
+      card2Sub: "आपका कार्गो, हमारी ज़िम्मेदारी",
+    },
+    stats: [
+      { value: "8+", label: "नेटवर्क में शहर" },
+      { value: "5", label: "फ्लीट श्रेणियां" },
+      { value: "24x7", label: "समर्पित सहायता" },
+      { value: "पैन इंडिया", label: "कवरेज" },
+    ],
+    about: {
+      kicker: "हमारे बारे में",
+      title: "दाहमी लॉजिस्टिक्स — हर बार, समय पर",
+      body1:
+        "दाहमी लॉजिस्टिक्स एक विश्वसनीय सड़क परिवहन और लॉजिस्टिक्स पार्टनर है जो पूरे भारत में कार्गो की भरोसेमंद डिलीवरी करता है। फुल ट्रक लोड और पार्ट लोड से लेकर एक्सप्रेस सेवाओं तक, हम हर आकार के व्यवसायों का सामान सुरक्षा, पारदर्शिता और तेज़ी से पहुंचाते हैं।",
+      body2:
+        "कोलकाता, दुर्गापुर और हल्दिया में शाखाओं तथा गुवाहाटी, रांची, भुवनेश्वर, मुंबई और सूरत में सैटेलाइट शाखाओं के साथ, हमारा नेटवर्क आपकी सप्लाई चेन को चालू रखता है — हर बार, समय पर।",
+      points: [
+        "FTL, पार्ट लोड और एक्सप्रेस सेवाएं",
+        "हर प्रकार के कार्गो के लिए विभिन्न वाहन",
+        "सभी लॉजिस्टिक्स ज़रूरतों के लिए एक ही संपर्क बिंदु",
+        "पारदर्शी मूल्य और स्पष्ट संवाद",
+      ],
+      imageAlt: "दाहमी लॉजिस्टिक्स में कार्गो संचालन",
+    },
+    shippers: {
+      kicker: "शिपर्स के लिए",
+      title: "लॉजिस्टिक्स जो आपके व्यवसाय को चालू रखे",
+      subtitle:
+        "शिपर की हर ज़रूरत — विश्वसनीयता, कवरेज, विज़िबिलिटी और वैल्यू, हर कंसाइनमेंट के पीछे एक समर्पित टीम के साथ।",
+      items: [
+        {
+          title: "समय पर और विश्वसनीय डिलीवरी",
+          desc: "हर बार, समय पर। हम हर रूट और लोड की योजना आपकी डिलीवरी समय-सीमा के अनुसार बनाते हैं।",
+        },
+        {
+          title: "पूरे भारत में कवरेज",
+          desc: "FTL, पार्ट लोड और एक्सप्रेस सेवाएं प्रमुख औद्योगिक और व्यावसायिक केंद्रों को जोड़ती हैं।",
+        },
+        {
+          title: "रीयल टाइम ट्रैकिंग",
+          desc: "पूरी यात्रा के दौरान आपके कार्गो की पूर्ण विज़िबिलिटी।",
+        },
+        {
+          title: "सर्वोत्तम मूल्य की गारंटी",
+          desc: "हर शिपमेंट पर प्रतिस्पर्धी दरें और अधिकतम वैल्यू।",
+        },
+        {
+          title: "समर्पित सहायता",
+          desc: "आपकी सभी लॉजिस्टिक्स ज़रूरतों के लिए एक ही संपर्क बिंदु।",
+        },
+      ],
+    },
+    commitment: {
+      kicker: "हमारी प्रतिबद्धता",
+      title: "आपका कार्गो, हमारी ज़िम्मेदारी",
+      subtitle:
+        "हर किलोमीटर और हर कंसाइनमेंट में चार स्तंभ हमारा मार्गदर्शन करते हैं।",
+      pillars: [
+        {
+          title: "सुरक्षा",
+          desc: "प्रशिक्षित ड्राइवर, सुरक्षित लोडिंग और हर कदम पर सावधानीपूर्वक हैंडलिंग।",
+        },
+        {
+          title: "विश्वसनीयता",
+          desc: "लगातार, भरोसेमंद सेवा जिस पर आपका व्यवसाय योजना बना सके।",
+        },
+        {
+          title: "पारदर्शिता",
+          desc: "निष्पक्ष प्रक्रिया, ईमानदार मूल्य और स्पष्ट संवाद।",
+        },
+        {
+          title: "समय पर डिलीवरी",
+          desc: "समय-सीमा मायने रखती है। हम हर बार समय पर डिलीवर करते हैं।",
+        },
+      ],
+    },
+    partners: {
+      kicker: "वेंडर्स और ट्रांसपोर्ट पार्टनर्स के लिए",
+      title: "हमारे साथ बढ़ें, हमारे साथ सफल हों",
+      subtitle:
+        "दाहमी लॉजिस्टिक्स पार्टनर नेटवर्क से जुड़ें और तेज़, निष्पक्ष व पारदर्शी लेन-देन के साथ नियमित व्यवसाय पाएं।",
+      items: [
+        {
+          title: "नियमित व्यापार के अवसर",
+          desc: "हमारे अखिल भारतीय नेटवर्क में लगातार लोड आपके वाहनों की कमाई बनाए रखते हैं।",
+        },
+        {
+          title: "तेज़ भुगतान",
+          desc: "समय पर और परेशानी-मुक्त सेटलमेंट — न कोई इंतज़ार, न कोई देरी।",
+        },
+        {
+          title: "पारदर्शी लेन-देन",
+          desc: "हर लेन-देन में निष्पक्ष प्रक्रिया और स्पष्ट संवाद।",
+        },
+        {
+          title: "डिजिटल और आसान प्रक्रिया",
+          desc: "कम कागज़ी कार्रवाई के साथ त्वरित असाइनमेंट।",
+        },
+        {
+          title: "दीर्घकालिक साझेदारी",
+          desc: "हम ऐसे रिश्ते बनाते हैं जो आपके साथ बढ़ते हैं।",
+        },
+      ],
+      cta: "हमारे पार्टनर बनें",
+    },
+    fleet: {
+      kicker: "हमारा फ्लीट",
+      title: "हर लोड के लिए विभिन्न प्रकार के वाहन",
+      subtitle:
+        "लाइट कमर्शियल वाहनों से लेकर ट्रेलर तक — आपके कार्गो के लिए सही वाहन, हर बार।",
+      items: [
+        {
+          code: "FTL",
+          name: "फुल ट्रक लोड",
+          desc: "भारत में कहीं भी आपके कार्गो की बल्क मूवमेंट के लिए समर्पित ट्रक।",
+        },
+        {
+          code: "LCV",
+          name: "लाइट कमर्शियल व्हीकल",
+          desc: "छोटे कंसाइनमेंट और शहरी वितरण के लिए फुर्तीले वाहन।",
+        },
+        {
+          code: "OPEN",
+          name: "ओपन बॉडी ट्रक",
+          desc: "बड़े आकार और सामान्य कार्गो के लिए लचीले ओपन बॉडी ट्रक।",
+        },
+        {
+          code: "CONTAINER",
+          name: "कंटेनर ट्रक",
+          desc: "उच्च-मूल्य और मौसम-संवेदनशील सामान के लिए सीलबंद कंटेनर वाहन।",
+        },
+        {
+          code: "TRAILER",
+          name: "ट्रेलर सेवाएं",
+          desc: "मशीनरी, प्रोजेक्ट और भारी कार्गो के लिए हैवी-ड्यूटी ट्रेलर।",
+        },
+      ],
+    },
+    valueProps: [
+      "पैन इंडिया नेटवर्क",
+      "विभिन्न प्रकार के वाहन",
+      "हर बार, समय पर",
+      "सुरक्षित डिलीवरी",
+      "मज़बूत साझेदारी, स्थायी विकास",
+    ],
+    network: {
+      kicker: "हमारा नेटवर्क",
+      title: "पूरे भारत में शाखाएं",
+      subtitle:
+        "रणनीतिक रूप से स्थित शाखाएं और सैटेलाइट कार्यालय आपके कार्गो को देश भर में चालू रखते हैं।",
+      branchesLabel: "शाखाएं",
+      satelliteLabel: "सैटेलाइट शाखाएं",
+      branches: ["कोलकाता", "दुर्गापुर", "हल्दिया"],
+      satellite: ["गुवाहाटी", "रांची", "भुवनेश्वर", "मुंबई", "सूरत"],
+      legendMain: "मुख्य शाखा",
+      legendSatellite: "सैटेलाइट",
+    },
+    ctaBanner: {
+      title: "आइए साथ मिलकर आगे बढ़ें",
+      subtitle: "जुड़ें | सहयोग करें | बढ़ें",
+      body: "शिपमेंट या साझेदारी के लिए तैयार हैं? हमारी टीम बस एक कॉल दूर है।",
+    },
+    contact: {
+      kicker: "संपर्क करें",
+      title: "हमारी टीम से संपर्क करें",
+      subtitle:
+        "अपने शिपमेंट या साझेदारी संबंधी पूछताछ के बारे में बताएं — हम तुरंत जवाब देते हैं।",
+      form: {
+        name: "पूरा नाम",
+        namePlaceholder: "आपका नाम",
+        phone: "फोन नंबर",
+        phonePlaceholder: "जैसे 9903830332",
+        email: "ईमेल (वैकल्पिक)",
+        emailPlaceholder: "you@company.com",
+        service: "सेवा में रुचि",
+        servicePlaceholder: "सेवा चुनें",
+        serviceOptions: [
+          { value: "FTL", label: "फुल ट्रक लोड (FTL)" },
+          { value: "Part Load", label: "पार्ट लोड" },
+          { value: "Express", label: "एक्सप्रेस" },
+          { value: "Vendor Partnership", label: "वेंडर / ट्रांसपोर्ट साझेदारी" },
+          { value: "Other", label: "अन्य" },
+        ],
+        message: "संदेश",
+        messagePlaceholder: "अपनी आवश्यकता के बारे में बताएं...",
+        submit: "संदेश भेजें",
+        submitting: "भेजा जा रहा है...",
+        successTitle: "संदेश सफलतापूर्वक भेजा गया!",
+        successDesc: "हमारी टीम जल्द ही आपसे संपर्क करेगी।",
+        errorTitle: "संदेश नहीं भेजा जा सका",
+        errorDesc: "कृपया पुनः प्रयास करें या हमें सीधे कॉल करें।",
+        errors: {
+          name: "कृपया अपना नाम दर्ज करें (कम से कम 2 अक्षर)",
+          phone: "कृपया मान्य फोन नंबर दर्ज करें (7-15 अंक)",
+          email: "कृपया मान्य ईमेल पता दर्ज करें",
+          service: "कृपया एक सेवा चुनें",
+          message: "कृपया संदेश दर्ज करें (कम से कम 5 अक्षर)",
+        },
+      },
+      details: {
+        title: "सीधे संपर्क करें",
+        phoneLabel: "फोन",
+        emailLabel: "ईमेल",
+        websiteLabel: "वेबसाइट",
+        branchesLabel: "शाखाएं",
+        hoursLabel: "सहायता",
+        hours: "24x7 — आपके कार्गो के लिए हमेशा उपलब्ध",
+      },
+    },
+    footer: {
+      blurb:
+        "पूरे भारत में विश्वसनीय लॉजिस्टिक्स समाधान। FTL, पार्ट लोड और एक्सप्रेस सेवाएं — हर बार, समय पर।",
+      quickLinks: "त्वरित लिंक",
+      services: "सेवाएं",
+      servicesList: [
+        "फुल ट्रक लोड (FTL)",
+        "पार्ट लोड",
+        "एक्सप्रेस सेवाएं",
+        "कंटेनर ट्रक",
+        "ट्रेलर सेवाएं",
+      ],
+      contact: "संपर्क",
+      tagline: "आइए साथ मिलकर आगे बढ़ें — जुड़ें | सहयोग करें | बढ़ें",
+      rights: "सर्वाधिकार सुरक्षित।",
+    },
+  },
+};
+
+const LanguageContext = createContext(null);
+
+export const LanguageProvider = ({ children }) => {
+  const [lang, setLangState] = useState(() => {
+    try {
+      const stored = localStorage.getItem("dahmi-lang");
+      return stored === "hi" ? "hi" : "en";
+    } catch {
+      return "en";
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    try {
+      localStorage.setItem("dahmi-lang", lang);
+    } catch {
+      // ignore storage errors
+    }
+  }, [lang]);
+
+  const setLang = (l) => setLangState(l === "hi" ? "hi" : "en");
+  const toggleLang = () => setLangState((prev) => (prev === "en" ? "hi" : "en"));
+
+  const t = translations[lang];
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, toggleLang, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export const useLang = () => {
+  const ctx = useContext(LanguageContext);
+  if (!ctx) throw new Error("useLang must be used within LanguageProvider");
+  return ctx;
+};
