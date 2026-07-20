@@ -3,6 +3,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/lib/i18n";
+import { PageMeta } from "@/lib/seo";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import Home from "@/pages/Home";
@@ -24,6 +25,7 @@ function App() {
   return (
     <BrowserRouter>
       <LanguageProvider>
+        <PageMeta />
         <ScrollToTop />
         <div className="flex min-h-screen flex-col bg-background">
           <Navbar />
