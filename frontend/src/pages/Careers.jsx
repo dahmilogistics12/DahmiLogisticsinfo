@@ -60,6 +60,8 @@ const CareerForm = () => {
     message: "",
   });
   const [resume, setResume] = useState(null);
+  // Honeypot — hidden from real users; only bots fill it.
+  const [companyWebsite, setCompanyWebsite] = useState("");
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -131,12 +133,14 @@ const CareerForm = () => {
       if (values.experience.trim()) formData.append("experience", values.experience.trim());
       formData.append("message", values.message.trim());
       formData.append("language", lang);
+      formData.append("company_website", companyWebsite);
       if (resume) formData.append("resume", resume);
 
       await axios.post(`${API}/careers`, formData);
       toast.success(f.successTitle, { description: f.successDesc });
       setValues({ name: "", phone: "", email: "", position: "", experience: "", message: "" });
       clearResume();
+      setCompanyWebsite("");
       setErrors({});
     } catch (err) {
       console.error("Career application failed", err);
@@ -148,6 +152,19 @@ const CareerForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" data-testid="career-form" noValidate>
+      {/* Honeypot field — visually hidden, off tab order, ignored by humans */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="career-company-website">Company Website</label>
+        <input
+          id="career-company-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={companyWebsite}
+          onChange={(e) => setCompanyWebsite(e.target.value)}
+        />
+      </div>
+
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="career-name">{f.name} *</Label>

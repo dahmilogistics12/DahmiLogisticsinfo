@@ -1,7 +1,11 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Form, File, UploadFile
+from fastapi import FastAPI, APIRouter, HTTPException, Form, File, UploadFile, Request
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.concurrency import run_in_threadpool
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
@@ -25,12 +29,44 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+# ---------- Environment / config ----------
+def _split_env(name: str, default: str = "") -> list:
+    return [x.strip() for x in os.environ.get(name, default).split(",") if x.strip()]
+
+
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "development").strip().lower()
+IS_PRODUCTION = ENVIRONMENT == "production"
+
+CORS_ORIGINS = _split_env("CORS_ORIGINS", "*")
+ALLOWED_HOSTS = _split_env("ALLOWED_HOSTS", "*")
+CONTACT_RATE_LIMIT = os.environ.get("CONTACT_RATE_LIMIT", "5/minute")
+CAREERS_RATE_LIMIT = os.environ.get("CAREERS_RATE_LIMIT", "3/minute")
+
+if IS_PRODUCTION and CORS_ORIGINS == ["*"]:
+    logger.warning(
+        "CORS_ORIGINS is '*' in production — set it to your real domain(s) in the environment."
+    )
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-app = FastAPI(title="Dahmi Logistics API")
+# Interactive API docs are disabled in production to avoid publishing the schema.
+app = FastAPI(
+    title="Dahmi Logistics API",
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json",
+)
+
+# Rate limiter (keyed on client IP). In-memory storage is fine for a single
+# worker; behind a proxy, run uvicorn with --proxy-headers so the real client
+# IP is used, and use a shared store (e.g. Redis) if running multiple workers.
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 api_router = APIRouter(prefix="/api")
 
@@ -87,6 +123,9 @@ class ContactSubmissionCreate(BaseModel):
     service_interest: str = Field(..., max_length=50)
     message: str = Field(..., min_length=5, max_length=2000)
     language: Optional[str] = Field(default="en", max_length=5)
+    # Honeypot: hidden in the UI, so real users leave it empty. Bots that
+    # auto-fill every field will populate it, letting us silently drop them.
+    company_website: Optional[str] = Field(default=None, max_length=200)
 
     @field_validator("name")
     @classmethod
@@ -151,8 +190,15 @@ async def root():
 
 
 @api_router.post("/contact", response_model=ContactSubmission)
-async def create_contact_submission(payload: ContactSubmissionCreate):
+@limiter.limit(CONTACT_RATE_LIMIT)
+async def create_contact_submission(request: Request, payload: ContactSubmissionCreate):
     submission = ContactSubmission(**payload.model_dump())
+
+    # Honeypot tripped → pretend success but do nothing (don't tip off the bot).
+    if payload.company_website:
+        logger.info("Contact honeypot triggered — dropping spam submission")
+        return submission
+
     doc = submission.model_dump()
     doc["created_at"] = doc["created_at"].isoformat()
     await db.contact_submissions.insert_one(doc)
@@ -242,6 +288,16 @@ class CareerApplication(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+def _has_valid_signature(content: bytes) -> bool:
+    """Verify the file's actual magic bytes match an allowed document type,
+    rather than trusting the client-supplied extension / content-type."""
+    return (
+        content.startswith(b"%PDF")  # PDF
+        or content.startswith(b"PK\x03\x04")  # .docx (ZIP container)
+        or content.startswith(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1")  # legacy .doc (OLE)
+    )
+
+
 async def _validate_resume(resume: Optional[UploadFile]) -> Optional[bytes]:
     if resume is None or not resume.filename:
         return None
@@ -253,11 +309,15 @@ async def _validate_resume(resume: Optional[UploadFile]) -> Optional[bytes]:
         raise HTTPException(422, "Resume must be under 5MB")
     if not content:
         return None
+    if not _has_valid_signature(content):
+        raise HTTPException(422, "Resume file does not appear to be a valid PDF or Word document")
     return content
 
 
 @api_router.post("/careers", response_model=CareerApplication)
+@limiter.limit(CAREERS_RATE_LIMIT)
 async def create_career_application(
+    request: Request,
     name: str = Form(...),
     phone: str = Form(...),
     email: Optional[str] = Form(None),
@@ -265,6 +325,7 @@ async def create_career_application(
     experience: Optional[str] = Form(None),
     message: str = Form(...),
     language: Optional[str] = Form("en"),
+    company_website: Optional[str] = Form(None),
     resume: Optional[UploadFile] = File(None),
 ):
     payload = CareerApplicationCreate(
@@ -276,6 +337,12 @@ async def create_career_application(
         message=message,
         language=language,
     )
+
+    # Honeypot tripped → pretend success but do nothing.
+    if company_website:
+        logger.info("Careers honeypot triggered — dropping spam submission")
+        return CareerApplication(**payload.model_dump())
+
     resume_bytes = await _validate_resume(resume)
 
     application = CareerApplication(
@@ -311,13 +378,30 @@ async def create_career_application(
 
 app.include_router(api_router)
 
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    if IS_PRODUCTION:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=False,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Reject requests with a spoofed / unexpected Host header in production.
+if IS_PRODUCTION and ALLOWED_HOSTS != ["*"]:
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=ALLOWED_HOSTS)
 
 
 @app.on_event("shutdown")

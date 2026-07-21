@@ -29,6 +29,8 @@ export const ContactForm = () => {
     service_interest: "",
     message: "",
   });
+  // Honeypot — hidden from real users; only bots fill it.
+  const [companyWebsite, setCompanyWebsite] = useState("");
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -66,9 +68,11 @@ export const ContactForm = () => {
         service_interest: values.service_interest,
         message: values.message.trim(),
         language: lang,
+        company_website: companyWebsite,
       });
       toast.success(f.successTitle, { description: f.successDesc });
       setValues({ name: "", phone: "", email: "", service_interest: "", message: "" });
+      setCompanyWebsite("");
       setErrors({});
     } catch (err) {
       console.error("Contact submission failed", err);
@@ -80,6 +84,19 @@ export const ContactForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" data-testid="contact-form" noValidate>
+      {/* Honeypot field — visually hidden, off tab order, ignored by humans */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="contact-company-website">Company Website</label>
+        <input
+          id="contact-company-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={companyWebsite}
+          onChange={(e) => setCompanyWebsite(e.target.value)}
+        />
+      </div>
+
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="contact-name">{f.name} *</Label>
