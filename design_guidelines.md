@@ -214,7 +214,7 @@
         "tailwind": "h-9 px-3 rounded-md border bg-background hover:bg-muted transition-colors"
       },
       "phone_cta": {
-        "copy": "+91 9903830332",
+        "copy": "+91 8981930011",
         "data_testid": "navbar-call-button",
         "variant": "default",
         "tailwind": "bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] hover:brightness-[0.98]"

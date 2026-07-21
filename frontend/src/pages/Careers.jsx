@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -13,6 +13,8 @@ import {
   Route,
   Handshake,
   Calculator,
+  Paperclip,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,9 +38,18 @@ const API = `${BACKEND_URL}/api`;
 const perkIcons = [TrendingUp, Users, Wallet, MapPinned];
 const roleIcons = [Truck, Route, Handshake, Calculator];
 
+const RESUME_MAX_BYTES = 5 * 1024 * 1024;
+const RESUME_ALLOWED_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+const RESUME_ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx"];
+
 const CareerForm = () => {
   const { t, lang } = useLang();
   const f = t.careers.form;
+  const fileInputRef = useRef(null);
 
   const [values, setValues] = useState({
     name: "",
@@ -48,12 +59,42 @@ const CareerForm = () => {
     experience: "",
     message: "",
   });
+  const [resume, setResume] = useState(null);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
   const setField = (key, val) => {
     setValues((prev) => ({ ...prev, [key]: val }));
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: null }));
+  };
+
+  const isResumeValid = (file) => {
+    const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+    if (!RESUME_ALLOWED_TYPES.includes(file.type) && !RESUME_ALLOWED_EXTENSIONS.includes(ext)) {
+      return f.errors.resumeType;
+    }
+    if (file.size > RESUME_MAX_BYTES) {
+      return f.errors.resumeSize;
+    }
+    return null;
+  };
+
+  const handleResumeChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const err = isResumeValid(file);
+    if (err) {
+      setErrors((prev) => ({ ...prev, resume: err }));
+      e.target.value = "";
+      return;
+    }
+    setErrors((prev) => ({ ...prev, resume: null }));
+    setResume(file);
+  };
+
+  const clearResume = () => {
+    setResume(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const validate = () => {
@@ -66,6 +107,10 @@ const CareerForm = () => {
     }
     if (!values.position) errs.position = f.errors.position;
     if (!values.message || values.message.trim().length < 5) errs.message = f.errors.message;
+    if (resume) {
+      const resumeErr = isResumeValid(resume);
+      if (resumeErr) errs.resume = resumeErr;
+    }
     return errs;
   };
 
@@ -78,17 +123,20 @@ const CareerForm = () => {
     }
     setSubmitting(true);
     try {
-      await axios.post(`${API}/careers`, {
-        name: values.name.trim(),
-        phone: values.phone.trim(),
-        email: values.email.trim() || null,
-        position: values.position,
-        experience: values.experience.trim() || null,
-        message: values.message.trim(),
-        language: lang,
-      });
+      const formData = new FormData();
+      formData.append("name", values.name.trim());
+      formData.append("phone", values.phone.trim());
+      if (values.email.trim()) formData.append("email", values.email.trim());
+      formData.append("position", values.position);
+      if (values.experience.trim()) formData.append("experience", values.experience.trim());
+      formData.append("message", values.message.trim());
+      formData.append("language", lang);
+      if (resume) formData.append("resume", resume);
+
+      await axios.post(`${API}/careers`, formData);
       toast.success(f.successTitle, { description: f.successDesc });
       setValues({ name: "", phone: "", email: "", position: "", experience: "", message: "" });
+      clearResume();
       setErrors({});
     } catch (err) {
       console.error("Career application failed", err);
@@ -208,6 +256,58 @@ const CareerForm = () => {
         {errors.message && (
           <p className="text-xs text-destructive" data-testid="career-message-error">
             {errors.message}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="career-resume">{f.resume}</Label>
+        <input
+          ref={fileInputRef}
+          id="career-resume"
+          type="file"
+          data-testid="career-resume-input"
+          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          onChange={handleResumeChange}
+          className="hidden"
+        />
+        {resume ? (
+          <div
+            className={`flex items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm ${
+              errors.resume ? "border-destructive" : ""
+            }`}
+          >
+            <span className="flex min-w-0 items-center gap-2 text-foreground">
+              <Paperclip className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <span className="truncate">{resume.name}</span>
+            </span>
+            <button
+              type="button"
+              data-testid="career-resume-remove"
+              onClick={clearResume}
+              className="shrink-0 rounded p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              aria-label={f.resumeRemove}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            data-testid="career-resume-choose"
+            onClick={() => fileInputRef.current?.click()}
+            className={`flex w-full items-center gap-2 rounded-md border border-dashed px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-[hsl(var(--brand-orange))] hover:text-foreground ${
+              errors.resume ? "border-destructive" : ""
+            }`}
+          >
+            <Paperclip className="h-4 w-4 shrink-0" />
+            {f.resumeChoose}
+          </button>
+        )}
+        <p className="text-xs text-muted-foreground">{f.resumeHint}</p>
+        {errors.resume && (
+          <p className="text-xs text-destructive" data-testid="career-resume-error">
+            {errors.resume}
           </p>
         )}
       </div>

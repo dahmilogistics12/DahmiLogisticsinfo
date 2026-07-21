@@ -166,6 +166,22 @@
   animation: glow-pulse 3.5s ease-in-out infinite;
 }
 
+/* Traffic-flow glow pulse for the interactive network map's road layer */
+@keyframes map-pulse {
+  0%,
+  100% {
+    opacity: 0.15;
+    filter: brightness(1.4) saturate(1.6) drop-shadow(0 0 2px hsla(0, 90%, 55%, 0.6));
+  }
+  50% {
+    opacity: 0.85;
+    filter: brightness(1.7) saturate(2) drop-shadow(0 0 7px hsla(0, 90%, 55%, 0.85));
+  }
+}
+.map-pulse {
+  animation: map-pulse 1.8s ease-in-out infinite;
+}
+
 ::selection {
   background: hsla(28, 92%, 55%, 0.25);
 }

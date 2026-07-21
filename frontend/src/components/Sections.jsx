@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -30,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "@/components/TiltCard";
+import { IndiaMap } from "@/components/IndiaMap";
 import { useLang, CONTACT_PHONE_TEL } from "@/lib/i18n";
 
 const HERO_IMG =
@@ -479,6 +481,18 @@ export const ValuePropsStrip = () => {
 /* ---------------- NETWORK ---------------- */
 export const NetworkSection = () => {
   const { t } = useLang();
+  const [activeKey, setActiveKey] = useState(null);
+
+  const branchKeys = t.network.branches.map((_, i) => `main-${i}`);
+  const satelliteKeys = t.network.satellite.map((_, i) => `sat-${i}`);
+
+  const badgeProps = (key) => ({
+    onMouseEnter: () => setActiveKey(key),
+    onFocus: () => setActiveKey(key),
+    onClick: () => setActiveKey(key),
+    onMouseLeave: () => setActiveKey((k) => (k === key ? null : k)),
+  });
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20" data-testid="network-section">
       <motion.div {...fadeUp}>
@@ -487,67 +501,100 @@ export const NetworkSection = () => {
       <motion.div {...fadeUp} className="mt-10">
         <Card className="overflow-hidden border">
           <CardContent className="p-0">
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-              <div className="border-b p-7 sm:p-9 lg:border-b-0 lg:border-r">
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--brand-navy))] text-white dark:bg-[hsl(var(--brand-orange))]">
-                    <MapPin size={18} />
-                  </span>
-                  <h3 className="text-lg font-semibold">{t.network.branchesLabel}</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-12">
+              <div className="space-y-8 border-b p-7 sm:p-9 lg:col-span-5 lg:border-b-0 lg:border-r">
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--brand-navy))] text-white dark:bg-[hsl(var(--brand-orange))]">
+                      <MapPin size={18} />
+                    </span>
+                    <h3 className="text-lg font-semibold">{t.network.branchesLabel}</h3>
+                  </div>
+                  <div className="mt-5 flex flex-wrap gap-2.5">
+                    {t.network.branches.map((b, i) => {
+                      const key = branchKeys[i];
+                      const isActive = activeKey === key;
+                      return (
+                        <motion.button
+                          type="button"
+                          key={i}
+                          {...badgeProps(key)}
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.35, delay: i * 0.08 }}
+                        >
+                          <Badge
+                            data-testid={`branch-badge-${i}`}
+                            className={`rounded-full px-4 py-1.5 text-sm font-medium text-white transition-colors ${
+                              isActive
+                                ? "bg-[hsl(var(--brand-orange))]"
+                                : "bg-[hsl(var(--brand-navy))] hover:bg-[hsl(var(--brand-navy-2))] dark:bg-[hsl(var(--brand-orange))] dark:hover:bg-[hsl(var(--brand-orange-2))]"
+                            }`}
+                          >
+                            {b}
+                          </Badge>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[hsl(var(--brand-navy))] dark:bg-[hsl(var(--brand-orange))]" />
+                    {t.network.legendMain}
+                  </div>
                 </div>
-                <div className="mt-5 flex flex-wrap gap-2.5">
-                  {t.network.branches.map((b, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.35, delay: i * 0.08 }}
-                    >
-                      <Badge
-                        data-testid={`branch-badge-${i}`}
-                        className="rounded-full bg-[hsl(var(--brand-navy))] px-4 py-1.5 text-sm font-medium text-white hover:bg-[hsl(var(--brand-navy-2))] dark:bg-[hsl(var(--brand-orange))] dark:hover:bg-[hsl(var(--brand-orange-2))]"
-                      >
-                        {b}
-                      </Badge>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[hsl(var(--brand-navy))] dark:bg-[hsl(var(--brand-orange))]" />
-                  {t.network.legendMain}
+
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--brand-orange))] text-white">
+                      <Network size={18} />
+                    </span>
+                    <h3 className="text-lg font-semibold">{t.network.satelliteLabel}</h3>
+                  </div>
+                  <div className="mt-5 flex flex-wrap gap-2.5">
+                    {t.network.satellite.map((s, i) => {
+                      const key = satelliteKeys[i];
+                      const isActive = activeKey === key;
+                      return (
+                        <motion.button
+                          type="button"
+                          key={i}
+                          {...badgeProps(key)}
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.35, delay: i * 0.07 }}
+                        >
+                          <Badge
+                            variant="outline"
+                            data-testid={`satellite-badge-${i}`}
+                            className={`rounded-full border-[hsl(var(--brand-orange))]/50 px-4 py-1.5 text-sm font-medium transition-colors ${
+                              isActive ? "bg-[hsl(var(--brand-orange))] text-white" : "text-[hsl(var(--brand-orange-2))]"
+                            }`}
+                          >
+                            {s}
+                          </Badge>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="h-2.5 w-2.5 rounded-full border-2 border-[hsl(var(--brand-orange))]" />
+                    {t.network.legendSatellite}
+                  </div>
                 </div>
               </div>
-              <div className="p-7 sm:p-9">
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--brand-orange))] text-white">
-                    <Network size={18} />
-                  </span>
-                  <h3 className="text-lg font-semibold">{t.network.satelliteLabel}</h3>
-                </div>
-                <div className="mt-5 flex flex-wrap gap-2.5">
-                  {t.network.satellite.map((s, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.35, delay: i * 0.07 }}
-                    >
-                      <Badge
-                        variant="outline"
-                        data-testid={`satellite-badge-${i}`}
-                        className="rounded-full border-[hsl(var(--brand-orange))]/50 px-4 py-1.5 text-sm font-medium text-[hsl(var(--brand-orange-2))]"
-                      >
-                        {s}
-                      </Badge>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="h-2.5 w-2.5 rounded-full border-2 border-[hsl(var(--brand-orange))]" />
-                  {t.network.legendSatellite}
-                </div>
+
+              <div className="flex flex-col items-center justify-center bg-secondary/40 p-7 sm:p-9 lg:col-span-7">
+                <IndiaMap
+                  branchNames={t.network.branches}
+                  satelliteNames={t.network.satellite}
+                  activeKey={activeKey}
+                  onActivate={setActiveKey}
+                  onClear={() => setActiveKey(null)}
+                  hqLabel={t.network.hqLabel}
+                />
+                <p className="mt-5 text-center text-xs text-muted-foreground">{t.network.mapHint}</p>
               </div>
             </div>
           </CardContent>

@@ -32,7 +32,7 @@ const pageMeta = {
     },
     "/contact": {
       title: "Contact Us | Dahmi Logistics",
-      desc: "Get in touch with Dahmi Logistics for FTL, Part Load, Express shipments or vendor partnerships. Call +91 9903830332 or send us a message — 24x7 support.",
+      desc: "Get in touch with Dahmi Logistics for FTL, Part Load, Express shipments or vendor partnerships. Call +91 8981930011 or send us a message — 24x7 support.",
     },
   },
   hi: {
@@ -62,7 +62,7 @@ const pageMeta = {
     },
     "/contact": {
       title: "संपर्क करें | दाहमी लॉजिस्टिक्स",
-      desc: "FTL, पार्ट लोड, एक्सप्रेस शिपमेंट या वेंडर साझेदारी के लिए दाहमी लॉजिस्टिक्स से संपर्क करें। कॉल करें +91 9903830332 — 24x7 सहायता।",
+      desc: "FTL, पार्ट लोड, एक्सप्रेस शिपमेंट या वेंडर साझेदारी के लिए दाहमी लॉजिस्टिक्स से संपर्क करें। कॉल करें +91 8981930011 — 24x7 सहायता।",
     },
   },
 };

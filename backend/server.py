@@ -1,19 +1,29 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Query
+from fastapi import FastAPI, APIRouter, HTTPException, Form, File, UploadFile
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.concurrency import run_in_threadpool
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
+import base64
 import logging
+import requests
+from html import escape as html_escape
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, field_validator
-from typing import List, Optional
+from typing import Optional
 import uuid
 from datetime import datetime, timezone
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -25,6 +35,48 @@ app = FastAPI(title="Dahmi Logistics API")
 api_router = APIRouter(prefix="/api")
 
 SERVICE_OPTIONS = ["FTL", "Part Load", "Express", "Vendor Partnership", "Other"]
+
+# ---------- Email notifications (Resend) ----------
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+NOTIFY_EMAIL = os.environ.get("NOTIFY_EMAIL", "dahmilogistics@gmail.com")
+FROM_EMAIL = os.environ.get("FROM_EMAIL", "Dahmi Logistics <onboarding@resend.dev>")
+
+RESUME_MAX_BYTES = 5 * 1024 * 1024
+RESUME_ALLOWED_TYPES = {
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+}
+RESUME_ALLOWED_EXTENSIONS = (".pdf", ".doc", ".docx")
+
+
+def _send_email_sync(subject: str, html: str, attachment: Optional[dict] = None) -> None:
+    if not RESEND_API_KEY:
+        logger.warning("RESEND_API_KEY not set — skipping email notification: %s", subject)
+        return
+    payload = {
+        "from": FROM_EMAIL,
+        "to": [NOTIFY_EMAIL],
+        "subject": subject,
+        "html": html,
+    }
+    if attachment:
+        payload["attachments"] = [attachment]
+    resp = requests.post(
+        "https://api.resend.com/emails",
+        headers={"Authorization": f"Bearer {RESEND_API_KEY}", "Content-Type": "application/json"},
+        json=payload,
+        timeout=15,
+    )
+    if resp.status_code >= 300:
+        logger.error("Resend email failed (%s): %s", resp.status_code, resp.text[:500])
+
+
+async def send_notification_email(subject: str, html: str, attachment: Optional[dict] = None) -> None:
+    try:
+        await run_in_threadpool(_send_email_sync, subject, html, attachment)
+    except Exception:
+        logger.exception("Failed to send notification email: %s", subject)
 
 
 # ---------- Models ----------
@@ -104,24 +156,20 @@ async def create_contact_submission(payload: ContactSubmissionCreate):
     doc = submission.model_dump()
     doc["created_at"] = doc["created_at"].isoformat()
     await db.contact_submissions.insert_one(doc)
+
+    html = f"""
+    <h2>New Contact Form Submission</h2>
+    <p><strong>Name:</strong> {html_escape(submission.name)}</p>
+    <p><strong>Phone:</strong> {html_escape(submission.phone)}</p>
+    <p><strong>Email:</strong> {html_escape(submission.email) if submission.email else '-'}</p>
+    <p><strong>Service Interest:</strong> {html_escape(submission.service_interest)}</p>
+    <p><strong>Message:</strong><br>{html_escape(submission.message)}</p>
+    <p><strong>Language:</strong> {html_escape(submission.language or '')}</p>
+    <p style="color:#888;font-size:12px;">Submitted {submission.created_at.isoformat()}</p>
+    """
+    await send_notification_email(f"New Contact: {submission.name}", html)
+
     return submission
-
-
-@api_router.get("/contacts", response_model=List[ContactSubmission])
-async def list_contact_submissions(
-    limit: int = Query(default=100, ge=1, le=500),
-    skip: int = Query(default=0, ge=0),
-):
-    docs = (
-        await db.contact_submissions.find({}, {"_id": 0})
-        .sort("created_at", -1)
-        .skip(skip)
-        .to_list(limit)
-    )
-    for d in docs:
-        if isinstance(d.get("created_at"), str):
-            d["created_at"] = datetime.fromisoformat(d["created_at"])
-    return docs
 
 
 POSITION_OPTIONS = ["drivers", "operations", "sales", "accounts", "other"]
@@ -190,50 +238,86 @@ class CareerApplication(BaseModel):
     experience: Optional[str] = None
     message: str
     language: Optional[str] = "en"
+    resume_filename: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+async def _validate_resume(resume: Optional[UploadFile]) -> Optional[bytes]:
+    if resume is None or not resume.filename:
+        return None
+    ext = os.path.splitext(resume.filename)[1].lower()
+    if resume.content_type not in RESUME_ALLOWED_TYPES and ext not in RESUME_ALLOWED_EXTENSIONS:
+        raise HTTPException(422, "Resume must be a PDF or Word document (.pdf, .doc, .docx)")
+    content = await resume.read(RESUME_MAX_BYTES + 1)
+    if len(content) > RESUME_MAX_BYTES:
+        raise HTTPException(422, "Resume must be under 5MB")
+    if not content:
+        return None
+    return content
+
+
 @api_router.post("/careers", response_model=CareerApplication)
-async def create_career_application(payload: CareerApplicationCreate):
-    application = CareerApplication(**payload.model_dump())
+async def create_career_application(
+    name: str = Form(...),
+    phone: str = Form(...),
+    email: Optional[str] = Form(None),
+    position: str = Form(...),
+    experience: Optional[str] = Form(None),
+    message: str = Form(...),
+    language: Optional[str] = Form("en"),
+    resume: Optional[UploadFile] = File(None),
+):
+    payload = CareerApplicationCreate(
+        name=name,
+        phone=phone,
+        email=email,
+        position=position,
+        experience=experience,
+        message=message,
+        language=language,
+    )
+    resume_bytes = await _validate_resume(resume)
+
+    application = CareerApplication(
+        **payload.model_dump(),
+        resume_filename=resume.filename if resume_bytes else None,
+    )
     doc = application.model_dump()
     doc["created_at"] = doc["created_at"].isoformat()
     await db.career_applications.insert_one(doc)
+
+    html = f"""
+    <h2>New Career Application</h2>
+    <p><strong>Name:</strong> {html_escape(application.name)}</p>
+    <p><strong>Phone:</strong> {html_escape(application.phone)}</p>
+    <p><strong>Email:</strong> {html_escape(application.email) if application.email else '-'}</p>
+    <p><strong>Position:</strong> {html_escape(application.position)}</p>
+    <p><strong>Experience:</strong> {html_escape(application.experience) if application.experience else '-'}</p>
+    <p><strong>Message:</strong><br>{html_escape(application.message)}</p>
+    <p><strong>Language:</strong> {html_escape(application.language or '')}</p>
+    <p><strong>Resume attached:</strong> {'Yes — ' + html_escape(application.resume_filename) if application.resume_filename else 'No'}</p>
+    <p style="color:#888;font-size:12px;">Submitted {application.created_at.isoformat()}</p>
+    """
+    attachment = None
+    if resume_bytes:
+        attachment = {
+            "filename": resume.filename,
+            "content": base64.b64encode(resume_bytes).decode("ascii"),
+        }
+    await send_notification_email(f"New Career Application: {application.name} ({application.position})", html, attachment)
+
     return application
-
-
-@api_router.get("/careers", response_model=List[CareerApplication])
-async def list_career_applications(
-    limit: int = Query(default=100, ge=1, le=500),
-    skip: int = Query(default=0, ge=0),
-):
-    docs = (
-        await db.career_applications.find({}, {"_id": 0})
-        .sort("created_at", -1)
-        .skip(skip)
-        .to_list(limit)
-    )
-    for d in docs:
-        if isinstance(d.get("created_at"), str):
-            d["created_at"] = datetime.fromisoformat(d["created_at"])
-    return docs
 
 
 app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 
 @app.on_event("shutdown")

@@ -104,7 +104,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-start gap-2.5 text-sm text-white/70">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[hsl(var(--brand-orange))]" />
-                <span>Kolkata | Durgapur | Haldia</span>
+                <span>23/4, Bikramgarh, Kolkata, 700032</span>
               </li>
             </ul>
           </div>

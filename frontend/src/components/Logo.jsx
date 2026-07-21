@@ -1,12 +1,10 @@
-import { Truck } from "lucide-react";
 import { Link } from "react-router-dom";
+import logoMark from "@/assets/logo.png";
 
 export const Logo = ({ light = false }) => {
   return (
     <Link to="/" data-testid="navbar-logo" className="flex items-center gap-2.5 group">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[hsl(var(--brand-orange))] text-white shadow-sm">
-        <Truck className="h-5 w-5" strokeWidth={2} />
-      </span>
+      <img src={logoMark} alt="Dahmi Logistics" className="h-9 w-9 object-contain" />
       <span className="leading-none">
         <span
           className={`block text-[17px] font-bold tracking-tight ${

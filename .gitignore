@@ -16,6 +16,9 @@ node_modules/
 !.yarn/releases
 !.yarn/versions
 
+# This project uses yarn.lock — ignore npm's lockfile to avoid drift
+package-lock.json
+
 # Testing
 /coverage
 
@@ -31,7 +34,9 @@ dist/
 dist
 
 # Environment files (comprehensive coverage)
-
+.env
+.env.*
+!.env.example
 *token.json*
 *credentials.json*
 

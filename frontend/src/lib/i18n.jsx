@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-export const CONTACT_PHONE = "+91 9903830332";
-export const CONTACT_PHONE_TEL = "+919903830332";
+export const CONTACT_PHONE = "+91 8981930011";
+export const CONTACT_PHONE_TEL = "+918981930011";
 export const CONTACT_EMAIL = "dahmilogistics@gmail.com";
 export const CONTACT_WEBSITE = "www.dahmilogistics.com";
 
@@ -189,6 +189,8 @@ export const translations = {
       satellite: ["Gauhati", "Ranchi", "Bhubaneswar", "Mumbai", "Surat"],
       legendMain: "Main Branch",
       legendSatellite: "Satellite",
+      hqLabel: "Headquarters",
+      mapHint: "Hover or tap a branch to trace its route",
     },
     ctaBanner: {
       title: "Let's Move Together",
@@ -204,7 +206,7 @@ export const translations = {
         name: "Full Name",
         namePlaceholder: "Your name",
         phone: "Phone Number",
-        phonePlaceholder: "e.g. 9903830332",
+        phonePlaceholder: "e.g. 8981930011",
         email: "Email (optional)",
         emailPlaceholder: "you@company.com",
         service: "Service Interest",
@@ -295,7 +297,7 @@ export const translations = {
         name: "Full Name",
         namePlaceholder: "Your name",
         phone: "Phone Number",
-        phonePlaceholder: "e.g. 9903830332",
+        phonePlaceholder: "e.g. 8981930011",
         email: "Email (optional)",
         emailPlaceholder: "you@example.com",
         position: "Position",
@@ -311,6 +313,11 @@ export const translations = {
         experiencePlaceholder: "e.g. 3 years",
         message: "Why do you want to join?",
         messagePlaceholder: "Tell us briefly about yourself...",
+        resume: "Resume / CV (optional)",
+        resumeHint: "PDF or Word, max 5MB",
+        resumeChoose: "Choose file",
+        resumeChange: "Change file",
+        resumeRemove: "Remove",
         submit: "Submit Application",
         submitting: "Submitting...",
         successTitle: "Application submitted!",
@@ -323,6 +330,8 @@ export const translations = {
           email: "Please enter a valid email address",
           position: "Please select a position",
           message: "Please write a short message (min 5 characters)",
+          resumeType: "Resume must be a PDF or Word document (.pdf, .doc, .docx)",
+          resumeSize: "Resume must be under 5MB",
         },
       },
     },
@@ -526,6 +535,8 @@ export const translations = {
       satellite: ["गुवाहाटी", "रांची", "भुवनेश्वर", "मुंबई", "सूरत"],
       legendMain: "मुख्य शाखा",
       legendSatellite: "सैटेलाइट",
+      hqLabel: "मुख्यालय",
+      mapHint: "मार्ग देखने के लिए किसी शाखा को होवर या टैप करें",
     },
     ctaBanner: {
       title: "आइए साथ मिलकर आगे बढ़ें",
@@ -541,7 +552,7 @@ export const translations = {
         name: "पूरा नाम",
         namePlaceholder: "आपका नाम",
         phone: "फोन नंबर",
-        phonePlaceholder: "जैसे 9903830332",
+        phonePlaceholder: "जैसे 8981930011",
         email: "ईमेल (वैकल्पिक)",
         emailPlaceholder: "you@company.com",
         service: "सेवा में रुचि",
@@ -632,7 +643,7 @@ export const translations = {
         name: "पूरा नाम",
         namePlaceholder: "आपका नाम",
         phone: "फोन नंबर",
-        phonePlaceholder: "जैसे 9903830332",
+        phonePlaceholder: "जैसे 8981930011",
         email: "ईमेल (वैकल्पिक)",
         emailPlaceholder: "you@example.com",
         position: "पद",
@@ -648,6 +659,11 @@ export const translations = {
         experiencePlaceholder: "जैसे 3 साल",
         message: "आप क्यों जुड़ना चाहते हैं?",
         messagePlaceholder: "अपने बारे में संक्षेप में बताएं...",
+        resume: "रिज़्यूमे / सीवी (वैकल्पिक)",
+        resumeHint: "PDF या Word, अधिकतम 5MB",
+        resumeChoose: "फ़ाइल चुनें",
+        resumeChange: "फ़ाइल बदलें",
+        resumeRemove: "हटाएं",
         submit: "आवेदन जमा करें",
         submitting: "जमा किया जा रहा है...",
         successTitle: "आवेदन जमा हो गया!",
@@ -660,6 +676,8 @@ export const translations = {
           email: "कृपया मान्य ईमेल पता दर्ज करें",
           position: "कृपया एक पद चुनें",
           message: "कृपया संक्षिप्त संदेश लिखें (कम से कम 5 अक्षर)",
+          resumeType: "रिज़्यूमे PDF या Word दस्तावेज़ होना चाहिए (.pdf, .doc, .docx)",
+          resumeSize: "रिज़्यूमे 5MB से कम होना चाहिए",
         },
       },
     },

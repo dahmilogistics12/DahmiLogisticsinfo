@@ -1,7 +1,6 @@
 import requests
 import sys
 from datetime import datetime
-import time
 
 class DahmiLogisticsAPITester:
     def __init__(self, base_url="https://cargo-connect-562.preview.emergentagent.com"):
@@ -187,59 +186,6 @@ class DahmiLogisticsAPITester:
             return passed
         except Exception as e:
             self.log_result("POST /api/contact - Short Message Validation", False, f"Error: {str(e)}")
-            return False
-
-    def test_get_contacts(self):
-        """Test GET /api/contacts - should return list sorted newest first"""
-        try:
-            # First create two contacts with slight delay to test sorting
-            contact1_payload = {
-                "name": "First Contact",
-                "phone": "9903830331",
-                "email": "first@example.com",
-                "service_interest": "Part Load",
-                "message": "First contact message",
-                "language": "en"
-            }
-            contact2_payload = {
-                "name": "Second Contact",
-                "phone": "9903830332",
-                "email": "second@example.com",
-                "service_interest": "Express",
-                "message": "Second contact message",
-                "language": "en"
-            }
-            
-            requests.post(f"{self.api_url}/contact", json=contact1_payload, timeout=10)
-            time.sleep(0.5)  # Small delay to ensure different timestamps
-            requests.post(f"{self.api_url}/contact", json=contact2_payload, timeout=10)
-            
-            # Now get the contacts
-            response = requests.get(f"{self.api_url}/contacts", timeout=10)
-            passed = response.status_code == 200
-            
-            if passed:
-                data = response.json()
-                is_list = isinstance(data, list)
-                has_contacts = len(data) >= 2
-                
-                # Check if sorted newest first (first item should be "Second Contact")
-                if has_contacts and len(data) >= 2:
-                    # The most recent should be at index 0
-                    first_item = data[0]
-                    is_sorted = first_item.get("name") == "Second Contact"
-                    passed = is_list and has_contacts and is_sorted
-                    details = f"Status: {response.status_code}, Count: {len(data)}, First: {first_item.get('name')}, Sorted: {is_sorted}"
-                else:
-                    passed = is_list and has_contacts
-                    details = f"Status: {response.status_code}, Count: {len(data)}"
-            else:
-                details = f"Status: {response.status_code}, Response: {response.text[:200]}"
-            
-            self.log_result("GET /api/contacts - List & Sort", passed, details)
-            return passed
-        except Exception as e:
-            self.log_result("GET /api/contacts - List & Sort", False, f"Error: {str(e)}")
             return False
 
     def test_all_service_options(self):
@@ -428,59 +374,6 @@ class DahmiLogisticsAPITester:
         
         return all_passed
 
-    def test_get_careers(self):
-        """Test GET /api/careers - should return list sorted newest first"""
-        try:
-            # First create two career applications with slight delay
-            career1_payload = {
-                "name": "First Applicant",
-                "phone": "9903830331",
-                "email": "first@example.com",
-                "position": "drivers",
-                "experience": "3 years",
-                "message": "First application message",
-                "language": "en"
-            }
-            career2_payload = {
-                "name": "Second Applicant",
-                "phone": "9903830332",
-                "email": "second@example.com",
-                "position": "operations",
-                "experience": "5 years",
-                "message": "Second application message",
-                "language": "en"
-            }
-            
-            requests.post(f"{self.api_url}/careers", json=career1_payload, timeout=10)
-            time.sleep(0.5)
-            requests.post(f"{self.api_url}/careers", json=career2_payload, timeout=10)
-            
-            # Now get the career applications
-            response = requests.get(f"{self.api_url}/careers", timeout=10)
-            passed = response.status_code == 200
-            
-            if passed:
-                data = response.json()
-                is_list = isinstance(data, list)
-                has_careers = len(data) >= 2
-                
-                if has_careers and len(data) >= 2:
-                    first_item = data[0]
-                    is_sorted = first_item.get("name") == "Second Applicant"
-                    passed = is_list and has_careers and is_sorted
-                    details = f"Status: {response.status_code}, Count: {len(data)}, First: {first_item.get('name')}, Sorted: {is_sorted}"
-                else:
-                    passed = is_list and has_careers
-                    details = f"Status: {response.status_code}, Count: {len(data)}"
-            else:
-                details = f"Status: {response.status_code}, Response: {response.text[:200]}"
-            
-            self.log_result("GET /api/careers - List & Sort", passed, details)
-            return passed
-        except Exception as e:
-            self.log_result("GET /api/careers - List & Sort", False, f"Error: {str(e)}")
-            return False
-
     def run_all_tests(self):
         """Run all backend tests"""
         print("\n" + "="*70)
@@ -508,11 +401,7 @@ class DahmiLogisticsAPITester:
         self.test_create_contact_invalid_email()
         self.test_create_contact_invalid_service()
         self.test_create_contact_short_message()
-        
-        # Test GET endpoint
-        print("\n--- Testing GET /api/contacts Endpoint ---\n")
-        self.test_get_contacts()
-        
+
         # ========== CAREERS API TESTS ==========
         print("\n" + "="*70)
         print("CAREERS API TESTS (NEW FEATURE)")
@@ -533,11 +422,7 @@ class DahmiLogisticsAPITester:
         self.test_create_career_invalid_email()
         self.test_create_career_invalid_position()
         self.test_create_career_short_message()
-        
-        # Test GET endpoint
-        print("\n--- Testing GET /api/careers Endpoint ---\n")
-        self.test_get_careers()
-        
+
         # Print summary
         print("\n" + "="*70)
         print(f"TESTS COMPLETED: {self.tests_passed}/{self.tests_run} PASSED")
