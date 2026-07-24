@@ -141,12 +141,11 @@ export const Hero = () => {
                 <circle cx="90" cy="212" r="4" fill="white" />
               </svg>
               <div className="absolute bottom-4 left-4 right-4 grid grid-cols-2 gap-3" style={{ transform: "translateZ(30px)" }}>
-                <div className="float-anim rounded-xl border bg-card/95 p-3 shadow-sm backdrop-blur">
+                <div className="float-anim flex items-center rounded-xl border bg-card/95 p-3 shadow-sm backdrop-blur">
                   <div className="flex items-center gap-2">
                     <Network className="h-4 w-4 text-[hsl(var(--brand-orange-2))]" />
                     <p className="text-xs font-semibold sm:text-sm">{t.hero.card1Title}</p>
                   </div>
-                  <p className="mt-1 text-[11px] text-muted-foreground sm:text-xs">{t.hero.card1Sub}</p>
                 </div>
                 <div className="float-anim-delayed rounded-xl border bg-card/95 p-3 shadow-sm backdrop-blur">
                   <div className="flex items-center gap-2">
