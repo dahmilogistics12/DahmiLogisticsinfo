@@ -37,7 +37,7 @@ export const translations = {
       card2Sub: "Your cargo, our responsibility",
     },
     stats: [
-      { value: "8+", label: "Cities in Network" },
+      { value: "28", label: "States in Network" },
       { value: "5", label: "Fleet Categories" },
       { value: "24x7", label: "Dedicated Support" },
       { value: "Pan India", label: "Coverage" },
@@ -56,6 +56,15 @@ export const translations = {
         "Transparent pricing and clear communication",
       ],
       imageAlt: "Cargo operations at Dahmi Logistics",
+    },
+    founder: {
+      kicker: "Leadership",
+      title: "Meet Our Founder",
+      name: "Lalit Khemka",
+      role: "Founder & Proprietor, Dahmi Logistics",
+      badges: ["Founded 2024", "Ex-Reliance Logistics"],
+      bio: "Lalit Khemka is the Founder and Proprietor of Dahmi Logistics, established in 2024 with a vision to deliver dependable and customer-focused logistics solutions. A former Sales Manager at Reliance Logistics, he brings extensive experience in both marketing and traffic management. Driven by a passion for excellence, he is committed to building a trusted logistics brand that prioritizes customer satisfaction, operational efficiency, and long-term relationships through reliable, on-time transportation services.",
+      photoAlt: "Lalit Khemka, Founder of Dahmi Logistics",
     },
     shippers: {
       kicker: "For Shippers",
@@ -383,7 +392,7 @@ export const translations = {
       card2Sub: "आपका कार्गो, हमारी ज़िम्मेदारी",
     },
     stats: [
-      { value: "8+", label: "नेटवर्क में शहर" },
+      { value: "28", label: "नेटवर्क में राज्य" },
       { value: "5", label: "फ्लीट श्रेणियां" },
       { value: "24x7", label: "समर्पित सहायता" },
       { value: "पैन इंडिया", label: "कवरेज" },
@@ -402,6 +411,15 @@ export const translations = {
         "पारदर्शी मूल्य और स्पष्ट संवाद",
       ],
       imageAlt: "दाहमी लॉजिस्टिक्स में कार्गो संचालन",
+    },
+    founder: {
+      kicker: "नेतृत्व",
+      title: "हमारे संस्थापक से मिलें",
+      name: "ललित खेमका",
+      role: "संस्थापक और प्रोपराइटर, दाहमी लॉजिस्टिक्स",
+      badges: ["स्थापना 2024", "पूर्व रिलायंस लॉजिस्टिक्स"],
+      bio: "ललित खेमका दाहमी लॉजिस्टिक्स के संस्थापक और प्रोपराइटर हैं, जिसकी स्थापना 2024 में विश्वसनीय और ग्राहक-केंद्रित लॉजिस्टिक्स समाधान प्रदान करने के दृष्टिकोण के साथ की गई थी। रिलायंस लॉजिस्टिक्स में पूर्व सेल्स मैनेजर के रूप में, वे मार्केटिंग और ट्रैफिक मैनेजमेंट दोनों में व्यापक अनुभव रखते हैं। उत्कृष्टता के प्रति जुनून से प्रेरित होकर, वे एक भरोसेमंद लॉजिस्टिक्स ब्रांड बनाने के लिए प्रतिबद्ध हैं जो विश्वसनीय, समय पर परिवहन सेवाओं के माध्यम से ग्राहक संतुष्टि, परिचालन दक्षता और दीर्घकालिक संबंधों को प्राथमिकता देता है।",
+      photoAlt: "ललित खेमका, दाहमी लॉजिस्टिक्स के संस्थापक",
     },
     shippers: {
       kicker: "शिपर्स के लिए",

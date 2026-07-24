@@ -1,4 +1,4 @@
-import { AboutSection, CommitmentSection, ValuePropsStrip, CtaBanner, StatsStrip } from "@/components/Sections";
+import { AboutSection, FounderSection, CommitmentSection, ValuePropsStrip, CtaBanner, StatsStrip } from "@/components/Sections";
 import { useLang } from "@/lib/i18n";
 
 export default function About() {
@@ -15,6 +15,7 @@ export default function About() {
         <StatsStrip />
       </div>
       <AboutSection full />
+      <FounderSection />
       <CommitmentSection />
       <ValuePropsStrip />
       <div className="pt-16">

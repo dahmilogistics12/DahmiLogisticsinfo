@@ -26,6 +26,7 @@ import {
   ArrowRight,
   Network,
   ShieldPlus,
+  Quote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,6 +34,7 @@ import { Badge } from "@/components/ui/badge";
 import { TiltCard } from "@/components/TiltCard";
 import { IndiaMap } from "@/components/IndiaMap";
 import { useLang, CONTACT_PHONE_TEL } from "@/lib/i18n";
+import founderPhoto from "@/assets/founder.jpg";
 
 const HERO_IMG =
   "https://images.unsplash.com/photo-1530547429276-0b6e470c90b8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTF8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBoaWdod2F5JTIwZnJlaWdodCUyMHRydWNrJTIwbG9naXN0aWNzfGVufDB8fHxibHVlfDE3ODQ1NDU0OTh8MA&ixlib=rb-4.1.0&q=85";
@@ -248,6 +250,55 @@ export const AboutSection = ({ full = false }) => {
           </TiltCard>
         </motion.div>
       </div>
+    </section>
+  );
+};
+
+/* ---------------- FOUNDER ---------------- */
+export const FounderSection = () => {
+  const { t } = useLang();
+  const f = t.founder;
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20" data-testid="founder-section">
+      <motion.div {...fadeUp}>
+        <SectionHeader kicker={f.kicker} title={f.title} center />
+      </motion.div>
+      <motion.div {...fadeUp} className="mt-10">
+        <Card className="overflow-hidden border">
+          <CardContent className="p-0">
+            <div className="grid grid-cols-1 lg:grid-cols-5">
+              <div className="relative lg:col-span-2">
+                <img
+                  src={founderPhoto}
+                  alt={f.photoAlt}
+                  className="h-80 w-full object-cover object-top lg:h-full lg:min-h-[420px]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[hsl(222,62%,10%)]/25 via-transparent to-transparent lg:bg-gradient-to-r" />
+              </div>
+              <div className="flex flex-col justify-center p-7 sm:p-10 lg:col-span-3">
+                <Quote className="h-8 w-8 text-[hsl(var(--brand-orange))]/30" strokeWidth={1.5} />
+                <h3 className="mt-3 text-xl font-semibold tracking-tight sm:text-2xl">{f.name}</h3>
+                <p className="mt-1 text-sm font-semibold uppercase tracking-wide text-[hsl(var(--brand-orange-2))]">
+                  {f.role}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {f.badges.map((b, i) => (
+                    <Badge
+                      key={i}
+                      variant="outline"
+                      className="rounded-full border-[hsl(var(--brand-navy))]/25 px-3 py-1 text-xs font-medium text-[hsl(var(--brand-navy))] dark:border-white/25 dark:text-white"
+                    >
+                      {b}
+                    </Badge>
+                  ))}
+                </div>
+                <p className="mt-5 text-sm leading-relaxed text-muted-foreground sm:text-base">{f.bio}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </section>
   );
 };
