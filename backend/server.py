@@ -74,7 +74,7 @@ SERVICE_OPTIONS = ["FTL", "Part Load", "Express", "Vendor Partnership", "Other"]
 
 # ---------- Email notifications (Resend) ----------
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
-NOTIFY_EMAIL = os.environ.get("NOTIFY_EMAIL", "dahmilogistics@gmail.com")
+NOTIFY_EMAIL = os.environ.get("NOTIFY_EMAIL", "info@dahmilogistics.com")
 FROM_EMAIL = os.environ.get("FROM_EMAIL", "Dahmi Logistics <onboarding@resend.dev>")
 
 RESUME_MAX_BYTES = 5 * 1024 * 1024
