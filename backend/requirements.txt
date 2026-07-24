@@ -1,6 +1,8 @@
 # ---- Runtime (required in production) ----
-fastapi==0.110.1
-uvicorn==0.25.0
+# fastapi/uvicorn pinned to current releases — 0.110.1 transitively pulled a
+# starlette version with 9 known CVEs (PYSEC-2026-161/248/249/1943/1941/2281/2280).
+fastapi==0.139.2
+uvicorn==0.51.0
 python-dotenv>=1.0.1
 pydantic>=2.6.4
 motor==3.3.1
@@ -10,9 +12,7 @@ requests>=2.31.0
 slowapi>=0.1.10
 tzdata>=2024.2
 
-# ---- Dev / test only (not needed in production) ----
-pytest>=8.0.0
-pytest-xdist>=3.6.0
+# ---- Dev only (not needed in production) ----
 black>=24.1.1
 isort>=5.13.2
 flake8>=7.0.0

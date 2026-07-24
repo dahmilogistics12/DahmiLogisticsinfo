@@ -288,6 +288,14 @@ class CareerApplication(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+def _safe_filename(filename: str) -> str:
+    """Strip any path components / control chars from a client-supplied
+    filename before it's used anywhere (e.g. email attachment name)."""
+    name = os.path.basename(filename).strip()
+    name = re.sub(r"[\x00-\x1f\x7f]", "", name)
+    return name[:150] or "resume"
+
+
 def _has_valid_signature(content: bytes) -> bool:
     """Verify the file's actual magic bytes match an allowed document type,
     rather than trusting the client-supplied extension / content-type."""
@@ -344,10 +352,11 @@ async def create_career_application(
         return CareerApplication(**payload.model_dump())
 
     resume_bytes = await _validate_resume(resume)
+    safe_resume_filename = _safe_filename(resume.filename) if resume_bytes else None
 
     application = CareerApplication(
         **payload.model_dump(),
-        resume_filename=resume.filename if resume_bytes else None,
+        resume_filename=safe_resume_filename,
     )
     doc = application.model_dump()
     doc["created_at"] = doc["created_at"].isoformat()
@@ -368,7 +377,7 @@ async def create_career_application(
     attachment = None
     if resume_bytes:
         attachment = {
-            "filename": resume.filename,
+            "filename": safe_resume_filename,
             "content": base64.b64encode(resume_bytes).decode("ascii"),
         }
     await send_notification_email(f"New Career Application: {application.name} ({application.position})", html, attachment)
@@ -379,7 +388,6 @@ async def create_career_application(
 app.include_router(api_router)
 
 
-@app.middleware("http")
 async def security_headers(request: Request, call_next):
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -402,6 +410,10 @@ app.add_middleware(
 # Reject requests with a spoofed / unexpected Host header in production.
 if IS_PRODUCTION and ALLOWED_HOSTS != ["*"]:
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=ALLOWED_HOSTS)
+
+# Registered last so it's the outermost layer — headers land on every
+# response, including CORS preflights and TrustedHost/rate-limit rejections.
+app.middleware("http")(security_headers)
 
 
 @app.on_event("shutdown")
