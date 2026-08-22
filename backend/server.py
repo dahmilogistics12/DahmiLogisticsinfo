@@ -218,7 +218,7 @@ async def create_contact_submission(request: Request, payload: ContactSubmission
     return submission
 
 
-POSITION_OPTIONS = ["drivers", "operations", "sales", "accounts", "other"]
+POSITION_OPTIONS = ["drivers", "operations", "sales", "accounts", "branch_manager", "other"]
 
 
 class CareerApplicationCreate(BaseModel):

@@ -15,6 +15,9 @@ import {
   Calculator,
   Paperclip,
   X,
+  Scale,
+  Building2,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +40,7 @@ const API = `${BACKEND_URL}/api`;
 
 const perkIcons = [TrendingUp, Users, Wallet, MapPinned];
 const roleIcons = [Truck, Route, Handshake, Calculator];
+const openingIcons = [TrendingUp, Truck, Calculator, Scale, Users];
 
 const RESUME_MAX_BYTES = 5 * 1024 * 1024;
 const RESUME_ALLOWED_TYPES = [
@@ -389,6 +393,80 @@ export default function Careers() {
           </motion.div>
         </div>
       </div>
+
+      {/* Current opening: Branch Managers */}
+      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16" data-testid="careers-opening-section">
+        <motion.div {...fadeUp}>
+          <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[hsl(var(--brand-orange-2))]">
+            <Building2 className="h-3.5 w-3.5" />
+            {t.careers.opening.badge}
+          </span>
+          <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
+            {t.careers.opening.title}
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm text-muted-foreground sm:text-base">
+            {t.careers.opening.intro}
+          </p>
+        </motion.div>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {t.careers.opening.responsibilities.map((r, i) => {
+            const Icon = openingIcons[i];
+            return (
+              <motion.div key={i} {...fadeUp} transition={{ ...fadeUp.transition, delay: i * 0.06 }}>
+                <Card className="h-full border bg-card">
+                  <CardContent className="p-5">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[hsl(var(--brand-sand))]">
+                      <Icon className="h-5 w-5 text-[hsl(var(--brand-orange-2))]" strokeWidth={1.9} />
+                    </span>
+                    <h3 className="mt-3 text-sm font-semibold">{r.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{r.desc}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <motion.div {...fadeUp} className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              {t.careers.opening.branchesLabel}
+            </h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {t.careers.opening.branches.map((b) => (
+                <span
+                  key={b}
+                  data-testid={`careers-opening-branch-${b}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border bg-secondary/60 px-3 py-1.5 text-sm font-medium"
+                >
+                  <MapPin className="h-3.5 w-3.5 text-[hsl(var(--brand-orange-2))]" />
+                  {b}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              {t.careers.opening.idealCandidateLabel}
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              {t.careers.opening.idealCandidate}
+            </p>
+          </div>
+        </motion.div>
+
+        <motion.div {...fadeUp} className="mt-8">
+          <Button
+            onClick={scrollToForm}
+            data-testid="careers-opening-apply-button"
+            className="gap-2 bg-[hsl(var(--brand-orange))] text-white hover:bg-[hsl(var(--brand-orange-2))]"
+          >
+            {t.careers.opening.cta}
+            <Send className="h-4 w-4" />
+          </Button>
+        </motion.div>
+      </section>
 
       {/* Perks */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16" data-testid="careers-perks-section">

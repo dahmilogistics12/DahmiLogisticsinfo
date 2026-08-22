@@ -299,6 +299,40 @@ export const translations = {
           desc: "Keep payments fast, records clean and processes transparent.",
         },
       ],
+      opening: {
+        badge: "We Are Hiring",
+        title: "Branch Managers",
+        intro:
+          "We are looking for dynamic and result-oriented Branch Managers to lead operations, drive business growth and ensure overall branch performance.",
+        responsibilities: [
+          {
+            title: "Generating New Business",
+            desc: "Identify opportunities and achieve business growth.",
+          },
+          {
+            title: "Placement of Vehicles & Operations",
+            desc: "Ensure timely vehicle placement and smooth operations.",
+          },
+          {
+            title: "Accounts & Billing",
+            desc: "Manage branch accounts, invoicing, collections and MIS.",
+          },
+          {
+            title: "Legal & Statutory Compliance",
+            desc: "Ensure adherence to all legal and regulatory requirements.",
+          },
+          {
+            title: "Overall Branch Management",
+            desc: "Leadership, team management and profitability.",
+          },
+        ],
+        branchesLabel: "Hiring for these branches",
+        branches: ["Haldia", "Surat", "Mumbai", "Dhanbad", "Indore", "Delhi"],
+        idealCandidateLabel: "Ideal Candidate",
+        idealCandidate:
+          "Experienced professionals from Transport / Logistics / FTL industry with strong business development skills, knowledge of local markets, vehicle placement and branch operations.",
+        cta: "Apply Now",
+      },
       form: {
         title: "Apply Now",
         subtitle: "Share your details and our team will reach out to you.",
@@ -315,6 +349,7 @@ export const translations = {
           { value: "operations", label: "Operations & Dispatch" },
           { value: "sales", label: "Sales & Business Development" },
           { value: "accounts", label: "Accounts & Admin" },
+          { value: "branch_manager", label: "Branch Manager" },
           { value: "other", label: "Other" },
         ],
         experience: "Experience (optional)",
@@ -653,6 +688,40 @@ export const translations = {
           desc: "भुगतान तेज़, रिकॉर्ड साफ और प्रक्रियाएं पारदर्शी रखें।",
         },
       ],
+      opening: {
+        badge: "हम भर्ती कर रहे हैं",
+        title: "ब्रांच मैनेजर",
+        intro:
+          "हम गतिशील और परिणाम-उन्मुख ब्रांच मैनेजर की तलाश कर रहे हैं, जो संचालन का नेतृत्व करें, व्यावसायिक विकास को आगे बढ़ाएं और समग्र शाखा प्रदर्शन सुनिश्चित करें।",
+        responsibilities: [
+          {
+            title: "नया व्यवसाय जनरेट करना",
+            desc: "अवसरों की पहचान करें और व्यावसायिक विकास हासिल करें।",
+          },
+          {
+            title: "वाहन प्लेसमेंट और संचालन",
+            desc: "समय पर वाहन प्लेसमेंट और सुचारू संचालन सुनिश्चित करें।",
+          },
+          {
+            title: "अकाउंट्स और बिलिंग",
+            desc: "शाखा खातों, इनवॉइसिंग, कलेक्शन और MIS का प्रबंधन करें।",
+          },
+          {
+            title: "कानूनी और सांविधिक अनुपालन",
+            desc: "सभी कानूनी और नियामक आवश्यकताओं का पालन सुनिश्चित करें।",
+          },
+          {
+            title: "समग्र शाखा प्रबंधन",
+            desc: "नेतृत्व, टीम प्रबंधन और लाभप्रदता।",
+          },
+        ],
+        branchesLabel: "इन शाखाओं के लिए भर्ती",
+        branches: ["हल्दिया", "सूरत", "मुंबई", "धनबाद", "इंदौर", "दिल्ली"],
+        idealCandidateLabel: "आदर्श उम्मीदवार",
+        idealCandidate:
+          "ट्रांसपोर्ट / लॉजिस्टिक्स / FTL उद्योग के अनुभवी पेशेवर, जिनके पास मज़बूत बिज़नेस डेवलपमेंट कौशल, स्थानीय बाज़ारों की जानकारी, वाहन प्लेसमेंट और शाखा संचालन का अनुभव हो।",
+        cta: "अभी आवेदन करें",
+      },
       form: {
         title: "अभी आवेदन करें",
         subtitle: "अपना विवरण साझा करें और हमारी टीम आपसे संपर्क करेगी।",
@@ -669,6 +738,7 @@ export const translations = {
           { value: "operations", label: "ऑपरेशन्स और डिस्पैच" },
           { value: "sales", label: "सेल्स और बिज़नेस डेवलपमेंट" },
           { value: "accounts", label: "अकाउंट्स और एडमिन" },
+          { value: "branch_manager", label: "ब्रांच मैनेजर" },
           { value: "other", label: "अन्य" },
         ],
         experience: "अनुभव (वैकल्पिक)",
