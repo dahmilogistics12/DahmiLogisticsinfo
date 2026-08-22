@@ -49,7 +49,7 @@ export const translations = {
       body2:
         "With branches in Kolkata, Durgapur and Haldia, and satellite branches across Gauhati, Ranchi, Bhubaneswar, Mumbai and Surat, our network keeps your supply chain moving — on time, every time.",
       points: [
-        "FTL, Part Load & Express services",
+        "Full Truck Load, Part Load & Express services",
         "Wide range of vehicles for every cargo type",
         "Single point of contact for all logistics needs",
         "Transparent pricing and clear communication",
@@ -438,7 +438,7 @@ export const translations = {
       body2:
         "कोलकाता, दुर्गापुर और हल्दिया में शाखाओं तथा गुवाहाटी, रांची, भुवनेश्वर, मुंबई और सूरत में सैटेलाइट शाखाओं के साथ, हमारा नेटवर्क आपकी सप्लाई चेन को चालू रखता है — हर बार, समय पर।",
       points: [
-        "FTL, पार्ट लोड और एक्सप्रेस सेवाएं",
+        "फुल ट्रक लोड, पार्ट लोड और एक्सप्रेस सेवाएं",
         "हर प्रकार के कार्गो के लिए विभिन्न वाहन",
         "सभी लॉजिस्टिक्स ज़रूरतों के लिए एक ही संपर्क बिंदु",
         "पारदर्शी मूल्य और स्पष्ट संवाद",

@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { PageMeta } from "@/lib/seo";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { HiringPopup } from "@/components/HiringPopup";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Services from "@/pages/Services";
@@ -45,6 +46,7 @@ function App() {
             </div>
             <Footer />
           </div>
+          <HiringPopup />
           <Toaster position="top-center" richColors />
         </LanguageProvider>
       </ThemeProvider>
